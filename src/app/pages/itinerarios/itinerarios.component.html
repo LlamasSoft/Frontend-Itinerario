@@ -1,0 +1,30 @@
+<div class="container mx-auto p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Mis Itinerarios</h1>
+    <p-button label="Nuevo Itinerario" icon="pi pi-plus"></p-button>
+  </div>
+
+  <p-table [value]="itinerarios" styleClass="p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-itinerario>
+      <tr>
+        <td>{{itinerario.id}}</td>
+        <td>{{itinerario.nombre}}</td>
+        <td>{{itinerario.fecha}}</td>
+        <td>{{itinerario.estado}}</td>
+        <td>
+          <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text mr-2"></p-button>
+          <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-text p-button-danger"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

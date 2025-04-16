@@ -1,0 +1,162 @@
+<div class="container mx-auto p-4">
+  <div class="max-w-3xl mx-auto">
+    <!-- Barra de progreso y pasos -->
+    <div *ngIf="!mostrarChat">
+      <div class="mb-8">
+        <div class="flex justify-between items-center">
+          <div *ngFor="let paso of [1,2,3]"
+               class="flex items-center"
+               [ngClass]="{'opacity-50': !esPasoCompletado(paso)}">
+            <div class="flex items-center">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                   [ngClass]="{'bg-primary-500 text-white': paso <= pasoActual, 'bg-gray-200': paso > pasoActual}">
+                {{paso}}
+              </div>
+              <div *ngIf="paso < 3" class="w-16 h-1 mx-4"
+                   [ngClass]="{'bg-primary-500': paso < pasoActual, 'bg-gray-200': paso >= pasoActual}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guía de pasos -->
+      <div class="space-y-8">
+        <!-- Paso 1: Presupuesto -->
+        <div class="animate-fade-in" *ngIf="pasoActual === 1">
+          <p-card class="shadow-lg">
+            <div class="text-center mb-6">
+              <i class="pi pi-wallet text-4xl text-primary-500 mb-4"></i>
+              <h2 class="text-2xl font-bold mb-2">{{mensajesGuia[0]}}</h2>
+              <p class="text-gray-600">Ingresa el monto que planeas gastar en tu viaje</p>
+            </div>
+            <div class="flex flex-col items-center gap-4">
+              <div class="flex gap-2 items-center">
+                <p-dropdown
+                  [options]="monedas"
+                  [(ngModel)]="monedaSeleccionada"
+                  optionLabel="label"
+                  class="w-40">
+                </p-dropdown>
+                <p-inputNumber
+                  [(ngModel)]="presupuesto"
+                  [showButtons]="true"
+                  buttonLayout="horizontal"
+                  spinnerMode="horizontal"
+                  [min]="getPresupuestoMinimo()"
+                  class="w-64"
+                  [placeholder]="'Mínimo ' + getPresupuestoMinimo() + ' ' + monedaSeleccionada.label.split(' ')[0]">
+                </p-inputNumber>
+              </div>
+              <p class="text-sm text-gray-500">
+                Presupuesto mínimo: {{getPresupuestoMinimo()}} {{monedaSeleccionada.label.split(' ')[0]}}
+              </p>
+            </div>
+          </p-card>
+        </div>
+
+        <!-- Paso 2: Días de viaje -->
+        <div class="animate-fade-in" *ngIf="pasoActual === 2">
+          <p-card class="shadow-lg">
+            <div class="text-center mb-6">
+              <i class="pi pi-calendar text-4xl text-primary-500 mb-4"></i>
+              <h2 class="text-2xl font-bold mb-2">{{mensajesGuia[1]}}</h2>
+              <p class="text-gray-600">Selecciona la duración de tu viaje</p>
+            </div>
+            <div class="flex flex-col items-center gap-4">
+              <p-inputNumber
+                [(ngModel)]="diasViaje"
+                [showButtons]="true"
+                buttonLayout="horizontal"
+                spinnerMode="horizontal"
+                [min]="1"
+                [max]="30"
+                class="w-64"
+                [placeholder]="'Número de ' + getDiasTexto()">
+              </p-inputNumber>
+              <p class="text-sm text-gray-500">
+                Mínimo 1 día, máximo 30 días
+              </p>
+            </div>
+          </p-card>
+        </div>
+
+        <!-- Paso 3: Fecha de salida -->
+        <div class="animate-fade-in" *ngIf="pasoActual === 3">
+          <p-card class="shadow-lg">
+            <div class="text-center mb-6">
+              <i class="pi pi-clock text-4xl text-primary-500 mb-4"></i>
+              <h2 class="text-2xl font-bold mb-2">{{mensajesGuia[2]}}</h2>
+              <p class="text-gray-600">Elige la fecha en que comenzarás tu aventura</p>
+            </div>
+            <div class="flex flex-col items-center gap-4">
+              <p-calendar
+                [(ngModel)]="fechaSalida"
+                [showIcon]="true"
+                dateFormat="dd/mm/yy"
+                [minDate]="fechaMinima"
+                class="w-64">
+              </p-calendar>
+              <p class="text-sm text-gray-500">
+                Selecciona una fecha futura para tu viaje
+              </p>
+            </div>
+          </p-card>
+        </div>
+
+        <!-- Botón de siguiente -->
+        <div class="flex justify-center">
+          <p-button
+            label="Siguiente"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            (onClick)="siguientePaso()"
+            [disabled]="(pasoActual === 1 && presupuesto < getPresupuestoMinimo()) ||
+                       (pasoActual === 2 && (diasViaje < 1 || diasViaje > 30)) ||
+                       (pasoActual === 3 && !esFechaValida())">
+          </p-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="animate-fade-in" *ngIf="mostrarChat">
+      <p-card class="chat-container">
+        <div class="flex flex-col h-[600px]">
+          <!-- Encabezado del Chat -->
+          <div class="flex items-center gap-3 p-4 border-b">
+            <i class="pi pi-comments text-2xl text-primary-500"></i>
+            <h2 class="text-xl font-bold">Asistente de Viajes</h2>
+          </div>
+
+          <!-- Área de Mensajes -->
+          <div class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div *ngFor="let msg of mensajes"
+                 class="animate-fade-in flex"
+                 [ngClass]="{'justify-end': msg.esUsuario, 'justify-start': !msg.esUsuario}">
+              <div [ngClass]="{'user-message': msg.esUsuario, 'assistant-message': !msg.esUsuario}"
+                   class="chat-message">
+                {{msg.texto}}
+              </div>
+            </div>
+          </div>
+
+          <!-- Input de Mensaje -->
+          <div class="p-4 border-t">
+            <div class="chat-input-container">
+              <input pInputText
+                     [(ngModel)]="mensaje"
+                     placeholder="Escribe tu mensaje..."
+                     class="chat-input flex-1"
+                     (keyup.enter)="enviarMensaje()">
+              <p-button
+                icon="pi pi-send"
+                (onClick)="enviarMensaje()">
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

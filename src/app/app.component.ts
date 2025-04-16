@@ -1,12 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { MenubarModule } from 'primeng/menubar';
+import { ButtonModule } from 'primeng/button';
+import { AvatarModule } from 'primeng/avatar';
+import { MenuModule } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
 import { TestService } from './services/test.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MenubarModule,
+    ButtonModule,
+    AvatarModule,
+    MenuModule  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -14,11 +25,47 @@ export class AppComponent implements OnInit {
   title = 'itinerario-frontend';
   backendResponse: any;
   error: string = '';
+  items = [
+    {
+      label: 'Inicio',
+      icon: 'pi pi-home',
+      routerLink: '/'
+    },
+    {
+      label: 'Itinerarios',
+      icon: 'pi pi-list',
+      routerLink: '/itinerarios'
+    },
+    {
+      label: 'Configuración',
+      icon: 'pi pi-cog',
+      routerLink: '/configuracion'
+    }
+  ];
+
+  userMenuItems: MenuItem[] | undefined;
 
   constructor(private testService: TestService) {}
 
   ngOnInit() {
     this.testBackend();
+    this.userMenuItems = [
+      {
+        label: 'Mi Perfil',
+        icon: 'pi pi-user'
+      },
+      {
+        label: 'Configuración',
+        icon: 'pi pi-cog'
+      },
+      {
+        separator: true
+      },
+      {
+        label: 'Cerrar Sesión',
+        icon: 'pi pi-sign-out'
+      }
+    ];
   }
 
   testBackend() {

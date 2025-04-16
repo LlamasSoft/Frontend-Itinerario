@@ -1,0 +1,101 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.5s ease-in-out;
+}
+
+/* Estilos para la barra de progreso */
+.progress-step {
+  transition: all 0.3s ease;
+}
+
+.progress-step.completed {
+  background-color: var(--primary-500);
+  color: white;
+}
+
+/* Estilos para los mensajes del chat */
+.chat-container {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.chat-message {
+  transition: all 0.3s ease;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.chat-message:hover {
+  transform: scale(1.02);
+}
+
+.user-message {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-radius: 1rem 1rem 0 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-left: auto;
+  padding: 0.75rem 1rem;
+}
+
+.assistant-message {
+  background: white;
+  border-radius: 1rem 1rem 1rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-right: auto;
+  padding: 0.75rem 1rem;
+}
+
+.chat-input {
+  background: white;
+  border-radius: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  padding: 0.75rem 1rem;
+}
+
+.chat-input:focus {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor de entrada de mensaje */
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chat-input-container button {
+  height: 2.5rem;
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
