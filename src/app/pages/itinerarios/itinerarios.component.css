@@ -1,0 +1,39 @@
+/* Estilos de la timeline */
+:host ::ng-deep .p-timeline .p-timeline-event-marker {
+  background: var(--primary-500);
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px var(--primary-100);
+}
+
+:host ::ng-deep .p-timeline .p-timeline-event-connector {
+  background: var(--primary-100);
+}
+
+/* Estilos de las tarjetas de día */
+.dia-card {
+  transition: all 0.3s ease;
+}
+
+.dia-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de las actividades */
+.actividad-card {
+  transition: all 0.3s ease;
+}
+
+.actividad-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos del botón de expandir */
+.expand-button {
+  transition: transform 0.3s ease;
+}
+
+.expand-button.rotated {
+  transform: rotate(180deg);
+}
