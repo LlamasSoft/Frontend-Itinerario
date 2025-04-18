@@ -1,4 +1,4 @@
-/* Estilos de la timeline */
+
 :host ::ng-deep .p-timeline .p-timeline-event-marker {
   background: var(--primary-500);
   border: 2px solid white;
@@ -9,31 +9,94 @@
   background: var(--primary-100);
 }
 
-/* Estilos de las tarjetas de día */
 .dia-card {
-  transition: all 0.3s ease;
+  background-color: #ecfdf5;
+  transition: all 0.3s ease-in-out;
+  padding: 1rem;
 }
 
 .dia-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos de las actividades */
-.actividad-card {
-  transition: all 0.3s ease;
-}
-
-.actividad-card:hover {
-  transform: translateX(5px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-/* Estilos del botón de expandir */
 .expand-button {
-  transition: transform 0.3s ease;
+  font-size: 1.5rem;
+  color: var(--primary-600);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.expand-button:hover {
+  background-color: var(--primary-100);
+  transform: scale(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .expand-button.rotated {
   transform: rotate(180deg);
+  background-color: var(--primary-200);
+}
+
+.expand-button.rotated:hover {
+  transform: rotate(180deg) scale(1.1);
+}
+
+.actividad-card {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.actividad-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-left-width: 8px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+p-timeline {
+  display: block;
+}
+
+:host ::ng-deep p-timeline .p-timeline-event-content {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+:host ::ng-deep p-timeline .p-timeline-event:nth-child(1) .p-timeline-event-content {
+  animation-delay: 0.1s;
+}
+
+:host ::ng-deep p-timeline .p-timeline-event:nth-child(2) .p-timeline-event-content {
+  animation-delay: 0.2s;
+}
+
+:host ::ng-deep p-timeline .p-timeline-event:nth-child(3) .p-timeline-event-content {
+  animation-delay: 0.3s;
+}
+
+:host ::ng-deep p-timeline .p-timeline-event:nth-child(4) .p-timeline-event-content {
+  animation-delay: 0.4s;
+}
+
+:host ::ng-deep p-timeline .p-timeline-event:nth-child(n+5) .p-timeline-event-content {
+  animation-delay: 0.5s;
 }
