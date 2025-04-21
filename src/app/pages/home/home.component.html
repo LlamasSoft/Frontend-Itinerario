@@ -4,7 +4,7 @@
     <div *ngIf="!mostrarChat">
       <div class="mb-8">
         <div class="flex justify-between items-center">
-          <div *ngFor="let paso of [1,2,3]"
+          <div *ngFor="let paso of [1,2,3,4,5]"
                class="flex items-center"
                [ngClass]="{'opacity-50': !esPasoCompletado(paso)}">
             <div class="flex items-center">
@@ -12,7 +12,7 @@
                    [ngClass]="{'bg-primary-500 text-white': paso <= pasoActual, 'bg-gray-200': paso > pasoActual}">
                 {{paso}}
               </div>
-              <div *ngIf="paso < 3" class="w-16 h-1 mx-4"
+              <div *ngIf="paso < 5" class="w-16 h-1 mx-4"
                    [ngClass]="{'bg-primary-500': paso < pasoActual, 'bg-gray-200': paso >= pasoActual}">
               </div>
             </div>
@@ -104,6 +104,73 @@
           </p-card>
         </div>
 
+        <!-- Paso 4: Lugar de salida -->
+        <div class="animate-fade-in" *ngIf="pasoActual === 4">
+          <p-card class="shadow-lg">
+            <div class="text-center mb-6">
+              <i class="pi pi-map-marker text-4xl text-primary-500 mb-4"></i>
+              <h2 class="text-2xl font-bold mb-2">{{mensajesGuia[3]}}</h2>
+              <p class="text-gray-600">Indica desde dónde comenzarás tu viaje</p>
+            </div>
+            <div class="flex flex-col items-center gap-4">
+              <p-autocomplete
+                [(ngModel)]="selectedCity"
+                [group]="true"
+                [suggestions]="filteredGroups"
+                (completeMethod)="filterGroupedCity($event)"
+                class="w-64"
+                field="label">
+                <ng-template let-group #group>
+                  <div class="flex items-center">
+                    <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" 
+                         [class]="'mr-2 flag flag-' + group.value" 
+                         style="width: 20px" />
+                    <span>{{ group.label }}</span>
+                  </div>
+                </ng-template>
+              </p-autocomplete>
+              <p class="text-sm text-gray-500">
+                Ingresa la ciudad de origen en Perú
+              </p>
+            </div>
+          </p-card>
+        </div>
+
+        <!-- Paso 5: Destinos deseados -->
+        <div class="animate-fade-in" *ngIf="pasoActual === 5">
+          <p-card class="shadow-lg">
+            <div class="text-center mb-6">
+              <i class="pi pi-globe text-4xl text-primary-500 mb-4"></i>
+              <h2 class="text-2xl font-bold mb-2">{{mensajesGuia[4]}}</h2>
+              <p class="text-gray-600">Selecciona los destinos que te gustaría visitar</p>
+            </div>
+            <div class="flex flex-col items-center gap-4">
+              <p-autocomplete
+                [(ngModel)]="selectedDestinos"
+                [suggestions]="filteredDestinos"
+                (completeMethod)="searchDestinos($event)"
+                [forceSelection]="true"
+                multiple="true"
+                [group]="true"
+                (onSelect)="onSelectDestino($event)"
+                (onUnselect)="onUnselectDestino($event)"
+                placeholder="Buscar destinos...">
+                <ng-template let-group #group>
+                  <div class="flex items-center">
+                    <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" 
+                         [class]="'mr-2 flag flag-' + group.value" 
+                         style="width: 20px" />
+                    <span>{{ group.label }}</span>
+                  </div>
+                </ng-template>
+              </p-autocomplete>
+              <p class="text-sm text-gray-500">
+                Puedes seleccionar múltiples destinos o dejarlo vacío para recibir recomendaciones
+              </p>
+            </div>
+          </p-card>
+        </div>
+
         <!-- Botón de siguiente -->
         <div class="flex justify-center">
           <p-button
@@ -113,7 +180,8 @@
             (onClick)="siguientePaso()"
             [disabled]="(pasoActual === 1 && presupuesto < getPresupuestoMinimo()) ||
                        (pasoActual === 2 && (diasViaje < 1 || diasViaje > 30)) ||
-                       (pasoActual === 3 && !esFechaValida())">
+                       (pasoActual === 3 && !esFechaValida()) ||
+                       (pasoActual === 4 && !selectedCity)">
           </p-button>
         </div>
       </div>
