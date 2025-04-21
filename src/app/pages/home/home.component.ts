@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { DividerModule } from 'primeng/divider';
 import { AnimateOnScrollModule } from 'primeng/animateonscroll';
 import { DropdownModule } from 'primeng/dropdown';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-home',
@@ -57,7 +58,9 @@ export class HomeComponent {
     "¿Cuándo te gustaría comenzar tu viaje?"
   ];
 
-  constructor() {
+  estaEscribiendo: boolean = false;
+
+  constructor(private chatService: ChatService) {
     // Establecer la hora a 00:00:00 para la fecha mínima
     this.fechaMinima.setHours(0, 0, 0, 0);
   }
@@ -77,9 +80,85 @@ export class HomeComponent {
     }
   }
 
+  limpiarTextoLaTeX(texto: string): string {
+    // Primero limpiar LaTeX
+    let textoLimpio = texto
+      .replace(/\\\[/g, '')  // Eliminar \[
+      .replace(/\\\]/g, '')  // Eliminar \]
+      .replace(/\\boxed{/g, '')  // Eliminar \boxed{
+      .replace(/}/g, '')  // Eliminar }
+      .replace(/\\\(/g, '')  // Eliminar \(
+      .replace(/\\\)/g, '')  // Eliminar \)
+      .replace(/\*\*/g, '')  // Eliminar **
+      .replace(/\*/g, '')  // Eliminar *
+      .replace(/\n/g, '<br>');  // Convertir saltos de línea en HTML
+
+    // Convertir Markdown a HTML
+    textoLimpio = textoLimpio
+      .replace(/### (.*?)<br>/g, '<h3>$1</h3>')  // Convertir ### en h3
+      .replace(/# (.*?)<br>/g, '<h2>$1</h2>')  // Convertir # en h2
+      .replace(/- (.*?)<br>/g, '<li>$1</li>')  // Convertir - en li
+      .replace(/<br><li>/g, '<ul><li>')  // Agregar ul antes del primer li
+      .replace(/<\/li><br>/g, '</li></ul><br>');  // Cerrar ul después del último li
+
+    return textoLimpio;
+  }
+
+  generarPrompt(mensajeUsuario: string): string {
+    const moneda = this.monedaSeleccionada.label.split(' ')[0];
+    const diasTexto = this.diasViaje === 1 ? 'día' : 'días';
+
+    return `Contexto del viaje:
+- Presupuesto: ${this.presupuesto} ${moneda}
+- Duración: ${this.diasViaje} ${diasTexto}
+- Fecha de salida: ${this.fechaSalida.toLocaleDateString()}
+
+Mensaje del usuario: "${mensajeUsuario}"
+
+Por favor, proporciona recomendaciones de viaje considerando el presupuesto, la duración y la fecha de salida.
+Sé específico con los lugares, actividades y costos aproximados.
+Si el usuario no especifica un destino, sugiere opciones dentro del presupuesto y tiempo disponibles.`;
+  }
+
   enviarMensaje() {
     if (this.mensaje.trim()) {
+      // Agregar mensaje del usuario
       this.mensajes.push({ texto: this.mensaje, esUsuario: true });
+
+      // Mostrar animación de escribiendo
+      this.estaEscribiendo = true;
+
+      // Generar prompt estructurado
+      const promptEstructurado = this.generarPrompt(this.mensaje);
+
+      // Enviar mensaje a la API
+      this.chatService.enviarMensaje(promptEstructurado).subscribe({
+        next: (respuesta) => {
+          // Ocultar animación de escribiendo
+          this.estaEscribiendo = false;
+
+          // Limpiar el texto de formato LaTeX y Markdown
+          const textoLimpio = this.limpiarTextoLaTeX(respuesta.data);
+
+          // Agregar respuesta del asistente
+          this.mensajes.push({
+            texto: textoLimpio || 'Lo siento, no pude procesar tu mensaje.',
+            esUsuario: false
+          });
+        },
+        error: (error) => {
+          // Ocultar animación de escribiendo
+          this.estaEscribiendo = false;
+
+          console.error('Error al enviar mensaje:', error);
+          this.mensajes.push({
+            texto: 'Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta nuevamente.',
+            esUsuario: false
+          });
+        }
+      });
+
+      // Limpiar el input
       this.mensaje = '';
     }
   }
