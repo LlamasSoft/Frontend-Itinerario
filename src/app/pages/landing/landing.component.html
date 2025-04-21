@@ -1,0 +1,96 @@
+<div class="min-h-screen bg-gradient-to-b from-primary-50 to-white">
+  <!-- Hero Section -->
+  <div class="container mx-auto px-4 py-16">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+      <div class="flex-1">
+        <h1 class="text-4xl md:text-6xl font-bold text-primary-700 mb-6">
+          Planifica tu viaje perfecto con IA
+        </h1>
+        <p class="text-xl text-gray-600 mb-8">
+          Descubre destinos increíbles, crea itinerarios personalizados y vive experiencias únicas con la ayuda de nuestra inteligencia artificial.
+        </p>
+        <div class="flex gap-4">
+          <p-button
+            label="Comenzar"
+            icon="pi pi-compass"
+            routerLink="/generar-itinerario"
+            class="p-button-lg">
+          </p-button>
+          <p-button
+            label="Ver ejemplos"
+            icon="pi pi-images"
+            severity="secondary"
+            class="p-button-lg">
+          </p-button>
+        </div>
+      </div>
+      <div class="flex-1">
+        <img src="/viajero.png"
+             alt="Viajero explorando el mundo"
+             class="w-full h-148 rounded-lg">
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="container mx-auto px-4 py-16">
+    <h2 class="text-3xl font-bold text-center text-primary-700 mb-12">
+      Características principales
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <p-card class="hover:shadow-lg transition-all duration-300">
+        <ng-template pTemplate="header">
+          <div class="flex justify-center p-4">
+            <i class="pi pi-compass text-4xl text-primary-500"></i>
+          </div>
+        </ng-template>
+        <h3 class="text-xl font-bold text-center mb-4">Itinerarios Personalizados</h3>
+        <p class="text-gray-600 text-center">
+          Crea planes de viaje adaptados a tus preferencias, presupuesto y tiempo disponible.
+        </p>
+      </p-card>
+
+      <p-card class="hover:shadow-lg transition-all duration-300">
+        <ng-template pTemplate="header">
+          <div class="flex justify-center p-4">
+            <i class="pi pi-map-marker text-4xl text-primary-500"></i>
+          </div>
+        </ng-template>
+        <h3 class="text-xl font-bold text-center mb-4">Destinos Únicos</h3>
+        <p class="text-gray-600 text-center">
+          Descubre lugares increíbles y experiencias auténticas recomendadas por nuestra IA.
+        </p>
+      </p-card>
+
+      <p-card class="hover:shadow-lg transition-all duration-300">
+        <ng-template pTemplate="header">
+          <div class="flex justify-center p-4">
+            <i class="pi pi-wallet text-4xl text-primary-500"></i>
+          </div>
+        </ng-template>
+        <h3 class="text-xl font-bold text-center mb-4">Control de Presupuesto</h3>
+        <p class="text-gray-600 text-center">
+          Mantén un seguimiento de tus gastos y optimiza tu presupuesto de viaje.
+        </p>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="container mx-auto px-4 py-16">
+    <div class="bg-primary-600 rounded-2xl p-8 md:p-12 text-center text-white">
+      <h2 class="text-3xl font-bold mb-4">
+        ¿Listo para comenzar tu aventura?
+      </h2>
+      <p class="text-xl mb-8">
+        Crea tu primer itinerario personalizado en minutos.
+      </p>
+      <p-button
+        label="Generar Itinerario"
+        icon="pi pi-compass"
+        class="p-button-lg p-button-outlined"
+        routerLink="/generar-itinerario">
+      </p-button>
+    </div>
+  </div>
+</div>

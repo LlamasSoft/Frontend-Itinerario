@@ -27,8 +27,13 @@ export class AppComponent implements OnInit {
   error: string = '';
   items = [
     {
-      label: 'Inicio',
+      label: 'Home',
       icon: 'pi pi-home',
+      routerLink: '/home'
+    },
+    {
+      label: 'Generar Itinerario',
+      icon: 'pi pi-compass',
       routerLink: '/'
     },
     {

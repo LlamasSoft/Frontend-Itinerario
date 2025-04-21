@@ -1,0 +1,60 @@
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out forwards;
+}
+
+/* Estilos para las tarjetas */
+:host ::ng-deep .p-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .p-card:hover {
+  transform: translateY(-5px);
+}
+
+:host ::ng-deep .p-card .p-card-header {
+  background: transparent;
+  padding: 0;
+}
+
+:host ::ng-deep .p-card .p-card-content {
+  padding: 1.5rem;
+}
+
+/* Estilos para los botones */
+:host ::ng-deep .p-button {
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .p-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}

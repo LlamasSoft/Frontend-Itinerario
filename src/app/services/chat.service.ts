@@ -7,10 +7,15 @@ import { Observable } from 'rxjs';
 })
 export class ChatService {
   private apiUrl = 'http://localhost:8000/api/deepseek/';
+  private imagesUrl = 'http://127.0.0.1:8000/api/images/';
 
   constructor(private http: HttpClient) { }
 
   enviarMensaje(mensaje: string): Observable<any> {
     return this.http.post(this.apiUrl, { prompt: mensaje });
+  }
+
+  obtenerImagenesLugar(nombreLugar: string): Observable<any> {
+    return this.http.post(this.imagesUrl, { nombre_lugar: nombreLugar });
   }
 }

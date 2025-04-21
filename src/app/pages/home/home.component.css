@@ -180,3 +180,73 @@
   left: 0;
   color: var(--primary-500);
 }
+
+/* Estilos para el carrusel de recomendaciones */
+.recomendacion-item {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.recomendacion-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el carrusel de PrimeNG */
+:host ::ng-deep .p-carousel .p-carousel-indicators .p-carousel-indicator button {
+  background-color: var(--primary-200);
+  width: 2rem;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
+  background-color: var(--primary-500);
+}
+
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-prev,
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-next {
+  background-color: var(--primary-500);
+  color: white;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-prev:hover,
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-next:hover {
+  background-color: var(--primary-600);
+  transform: scale(1.1);
+}
+
+/* Estilos para las actividades */
+.recomendacion-item ul li {
+  position: relative;
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.recomendacion-item ul li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--primary-500);
+  font-weight: bold;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .recomendacion-item {
+    flex-direction: column;
+  }
+
+  .recomendacion-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+}
