@@ -135,8 +135,17 @@
                  class="animate-fade-in flex"
                  [ngClass]="{'justify-end': msg.esUsuario, 'justify-start': !msg.esUsuario}">
               <div [ngClass]="{'user-message': msg.esUsuario, 'assistant-message': !msg.esUsuario}"
-                   class="chat-message">
-                {{msg.texto}}
+                   class="chat-message"
+                   [innerHTML]="msg.texto">
+              </div>
+            </div>
+
+            <!-- Animación de escribiendo -->
+            <div *ngIf="estaEscribiendo" class="animate-fade-in flex justify-start">
+              <div class="escribiendo">
+                <span></span>
+                <span></span>
+                <span></span>
               </div>
             </div>
           </div>
