@@ -1,14 +1,15 @@
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { TimelineModule } from 'primeng/timeline';
-import { jsPDF } from 'jspdf';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-import { Component } from '@angular/core';
-import { trigger, transition, style, animate, state, keyframes } from '@angular/animations';
+import { jsPDF } from 'jspdf';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { trigger, transition, style, animate, keyframes } from '@angular/animations';
 
 interface Actividad {
   hora: string;
@@ -24,8 +25,8 @@ interface Actividad {
 interface DiaItinerario {
   numero: number;
   fecha: Date;
-  actividades: Actividad[];
   resumen: string;
+  actividades: Actividad[];
 }
 
 @Component({
@@ -39,7 +40,8 @@ interface DiaItinerario {
     TimelineModule,
     DialogModule,
     FormsModule,
-    InputTextModule
+    InputTextModule,
+    HttpClientModule
   ],
   templateUrl: './itinerarios.component.html',
   styleUrls: ['./itinerarios.component.css'],
@@ -47,33 +49,30 @@ interface DiaItinerario {
     trigger('expandCollapse', [
       transition(':enter', [
         style({ height: '0', opacity: 0, overflow: 'hidden' }),
-        animate('300ms ease-out', 
-          style({ height: '*', opacity: 1 }))
+        animate('300ms ease-out', style({ height: '*', opacity: 1 }))
       ]),
       transition(':leave', [
         style({ height: '*', opacity: 1, overflow: 'hidden' }),
-        animate('250ms ease-in', 
-          style({ height: '0', opacity: 0 }))
+        animate('250ms ease-in', style({ height: '0', opacity: 0 }))
       ])
     ]),
     trigger('timelineItem', [
       transition(':enter', [
-        animate('0.5s ease-out', 
-          keyframes([
-            style({ opacity: 0, transform: 'translateY(20px)', offset: 0 }),
-            style({ opacity: 1, transform: 'translateY(0)', offset: 1 })
-          ]))
+        animate('0.5s ease-out', keyframes([
+          style({ opacity: 0, transform: 'translateY(20px)', offset: 0 }),
+          style({ opacity: 1, transform: 'translateY(0)', offset: 1 })
+        ]))
       ])
     ])
   ]
 })
-export class ItinerariosComponent {
+export class ItinerariosComponent implements OnInit {
+  itinerarios: DiaItinerario[] = [];
   diasSeleccionados: number[] = [];
   mostrarModal = false;
   mostrarImagenModal = false;
   imagenModalUrl = '';
   indiceDiaSeleccionado = -1;
-  
   nuevaActividad: Actividad = {
     hora: '',
     titulo: '',
@@ -82,76 +81,24 @@ export class ItinerariosComponent {
     duracion: ''
   };
 
-  itinerarios: DiaItinerario[] = [
-    {
-      numero: 1,
-      fecha: new Date(),
-      resumen: 'Exploración del centro histórico y principales atracciones',
-      actividades: [
-        {
-          hora: '09:00',
-          titulo: 'Desayuno en el Mercado Central',
-          descripcion: 'Degustación de platos típicos locales en el corazón de la ciudad',
-          lugar: 'Mercado Central de Lima',
-          costo: 25,
-          duracion: '1 hora',
-          transporte: 'Taxi (15 min)',
-          imagen: 'https://gestion.pe/resizer/x1CzJGfV0X3tE9Nd-vh-kVBCwQw=/1200x900/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/X7I24AAJZRHVTHRDFZHBIMU4WQ.jpg'
+  constructor(private http: HttpClient) { }
+
+  ngOnInit() {
+    this.http.get<any>('http://127.0.0.1:8000/api/itinerarios/')
+      .subscribe({
+        next: (response) => {
+          if (response.status === 'success') {
+            this.itinerarios = response.data.map((dia: any) => ({
+              ...dia,
+              fecha: new Date(dia.fecha)
+            }));
+          }
         },
-        {
-          hora: '10:30',
-          titulo: 'Visita a la Plaza de Armas',
-          descripcion: 'Recorrido guiado por la plaza principal y catedral con explicación histórica',
-          lugar: 'Plaza de Armas de Lima',
-          duracion: '2 horas',
-          transporte: 'Caminando (10 min)'
-        },
-        {
-          hora: '13:00',
-          titulo: 'Almuerzo en restaurante tradicional',
-          descripcion: 'Comida peruana gourmet con ingredientes locales de temporada',
-          lugar: 'Restaurante Central',
-          costo: 80,
-          duracion: '1.5 horas',
-          transporte: 'Taxi (5 min)'
+        error: (error) => {
+          console.error('Error al cargar itinerarios:', error);
         }
-      ]
-    },
-    {
-      numero: 2,
-      fecha: new Date(new Date().setDate(new Date().getDate() + 1)),
-      resumen: 'Tour por los museos y arte local en el distrito bohemio',
-      actividades: [
-        {
-          hora: '10:00',
-          titulo: 'Visita al Museo Larco',
-          descripcion: 'Exploración de arte precolombino con guía especializado',
-          lugar: 'Museo Larco',
-          costo: 35,
-          duracion: '3 horas',
-          transporte: 'Taxi (20 min)',
-          imagen: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ba/2d/7e/museo-larco.jpg?w=1200&h=-1&s=1'
-        },
-        {
-          hora: '14:00',
-          titulo: 'Almuerzo en Barranco',
-          descripcion: 'Comida fusión en el distrito bohemio con vista al mar',
-          lugar: 'Restaurante Isolina',
-          costo: 45,
-          duracion: '1.5 horas',
-          transporte: 'Caminando (5 min)'
-        },
-        {
-          hora: '16:30',
-          titulo: 'Recorrido por el Puente de los Suspiros',
-          descripcion: 'Paseo romántico por el emblemático puente y calles aledañas',
-          lugar: 'Barranco',
-          duracion: '1 hora',
-          transporte: 'Caminando (15 min)'
-        }
-      ]
-    }
-  ];
+      });
+  }
 
   toggleDia(dia: number) {
     const index = this.diasSeleccionados.indexOf(dia);
@@ -182,7 +129,7 @@ export class ItinerariosComponent {
   generarTags(dia: DiaItinerario): string[] {
     const tags = [];
     const costoTotal = dia.actividades.reduce((sum, act) => sum + (act.costo || 0), 0);
-    
+
     if (costoTotal > 100) {
       tags.push('Premium');
     } else if (costoTotal > 50) {
@@ -190,27 +137,27 @@ export class ItinerariosComponent {
     } else {
       tags.push('Económico');
     }
-    
-    const actividadesExteriores = dia.actividades.filter(a => 
-      a.lugar.toLowerCase().includes('plaza') || 
+
+    const actividadesExteriores = dia.actividades.filter(a =>
+      a.lugar.toLowerCase().includes('plaza') ||
       a.lugar.toLowerCase().includes('parque') ||
       a.descripcion.toLowerCase().includes('recorrido')
     ).length;
-    
+
     if (actividadesExteriores > 0) {
       tags.push('Aire libre');
     }
-    
+
     if (dia.actividades.some(a => a.costo && a.costo > 30)) {
       tags.push('Gastronomía');
     }
-    
+
     if (dia.actividades.length > 3) {
       tags.push('Intenso');
     } else {
       tags.push('Relajado');
     }
-    
+
     return tags;
   }
 
@@ -337,33 +284,33 @@ export class ItinerariosComponent {
   generarResumenInteligente(dia: DiaItinerario): string {
     const primeraActividad = dia.actividades[0];
     const ultimaActividad = dia.actividades[dia.actividades.length - 1];
-  
+
     let recomendaciones = [];
-  
+
     const horaInicio = parseInt(primeraActividad.hora.split(':')[0]);
     if (horaInicio < 9) {
       recomendaciones.push('Desayuna temprano antes de salir');
     } else {
       recomendaciones.push('Puedes tomarte la mañana con calma');
     }
-  
+
     const actividadesExteriores = dia.actividades.filter(a =>
       a.descripcion.toLowerCase().includes('recorrido') ||
       a.lugar.toLowerCase().includes('plaza') ||
       a.lugar.toLowerCase().includes('parque')
     );
-  
+
     if (actividadesExteriores.length > 0) {
       recomendaciones.push('Lleva ropa ligera y bloqueador solar');
     }
-  
+
     const totalCosto = dia.actividades.reduce((sum, act) => sum + (act.costo || 0), 0);
     if (totalCosto > 100) {
       recomendaciones.push('Recuerda llevar suficiente efectivo o tu tarjeta');
     }
-  
+
     recomendaciones.push(`Tu primera actividad empieza a las ${primeraActividad.hora}`);
-  
+
     return recomendaciones.join('. ') + '.';
   }
 
