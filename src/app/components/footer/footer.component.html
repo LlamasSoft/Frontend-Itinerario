@@ -1,0 +1,73 @@
+<footer class="bg-surface-900 text-surface-0 w-full">
+  <div class="w-full px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <!-- Columna 1: Logo y descripción -->
+        <div class="col-span-1 md:col-span-2">
+          <div class="flex items-center mb-4">
+            <i class="pi pi-compass text-3xl text-primary-500 mr-2"></i>
+            <span class="text-2xl font-bold">Itinerario AI</span>
+          </div>
+          <p class="text-surface-400 mb-4">
+            Tu asistente personal para planificar viajes inolvidables en Perú.
+            Descubre los mejores destinos, actividades y experiencias con la ayuda de inteligencia artificial.
+          </p>
+          <div class="flex gap-4">
+            <p-button icon="pi pi-facebook" [text]="true" severity="secondary" pRipple></p-button>
+            <p-button icon="pi pi-instagram" [text]="true" severity="secondary" pRipple></p-button>
+            <p-button icon="pi pi-twitter" [text]="true" severity="secondary" pRipple></p-button>
+          </div>
+        </div>
+
+        <!-- Columna 2: Enlaces rápidos -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Enlaces Rápidos</h3>
+          <ul class="space-y-2">
+            <li>
+              <a routerLink="/" class="text-surface-400 hover:text-primary-500 transition-colors">
+                Inicio
+              </a>
+            </li>
+            <li>
+              <a routerLink="/itinerarios" class="text-surface-400 hover:text-primary-500 transition-colors">
+                Mis Itinerarios
+              </a>
+            </li>
+            <li>
+              <a routerLink="/contacto" class="text-surface-400 hover:text-primary-500 transition-colors">
+                Contacto
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Contacto -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Contacto</h3>
+          <ul class="space-y-2">
+            <li class="flex items-center text-surface-400">
+              <i class="pi pi-map-marker mr-2"></i>
+              Lambayeque, Perú
+            </li>
+            <li class="flex items-center text-surface-400">
+              <i class="pi pi-envelope mr-2"></i>
+              info&#64;itinerarioai.com
+            </li>
+            <li class="flex items-center text-surface-400">
+              <i class="pi pi-phone mr-2"></i>
+              +51 977 475 879
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Línea divisoria -->
+      <div class="border-t border-surface-800 my-4"></div>
+
+      <!-- Copyright -->
+      <div class="text-center text-surface-400">
+        <p>&copy; {{ currentYear }} Itinerario AI. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </div>
+</footer>

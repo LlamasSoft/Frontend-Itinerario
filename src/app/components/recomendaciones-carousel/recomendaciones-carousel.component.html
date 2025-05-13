@@ -1,0 +1,244 @@
+<div *ngIf="recomendaciones.length > 0" class="mt-8">
+  <p-card header="Recomendaciones de Viaje" class="shadow-lg">
+    <p-carousel [value]="recomendaciones"
+               [numVisible]="1"
+               [numScroll]="1"
+               [circular]="true"
+               [responsiveOptions]="responsiveOptions"
+               class="carousel-lg">
+      <ng-template let-recomendacion pTemplate="item">
+        <div class="recomendacion-item p-6">
+          <div class="flex flex-col items-center">
+            <!-- Imagen del lugar -->
+            <div *ngIf="recomendacion.imagen" class="mb-6 w-full h-[400px] overflow-hidden rounded-xl shadow-lg">
+              <img [src]="recomendacion.imagen"
+                   [alt]="recomendacion.titulo"
+                   class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500">
+            </div>
+
+            <!-- Título y descripción -->
+            <div class="text-center mb-8">
+              <h3 class="text-3xl font-bold mb-4 text-primary-600">{{recomendacion.titulo}}</h3>
+              <p class="text-gray-700 text-lg leading-relaxed max-w-3xl">{{recomendacion.descripcion}}</p>
+            </div>
+
+            <!-- Actividades -->
+            <div class="w-full mb-8">
+              <h4 class="text-2xl font-bold mb-6 text-primary-600 text-center">Actividades</h4>
+              <div class="grid grid-cols-1 gap-6">
+                <div *ngFor="let actividad of recomendacion.actividades"
+                     class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                  <div class="flex flex-col">
+                    <!-- Título y descripción -->
+                    <div class="mb-4">
+                      <h5 class="text-xl font-semibold text-primary-500">{{actividad.nombre}}</h5>
+                      <p class="text-gray-600 mt-2">{{actividad.descripcion}}</p>
+                    </div>
+
+                    <!-- Duración y costo -->
+                    <div class="flex justify-between items-center mb-4 p-4 bg-gray-50 rounded-lg">
+                      <div class="flex items-center">
+                        <i class="pi pi-clock text-primary-500 mr-2"></i>
+                        <span class="text-gray-600">{{actividad.duracion}}</span>
+                      </div>
+                      <div class="flex items-center">
+                        <i class="pi pi-wallet text-primary-500 mr-2"></i>
+                        <span class="font-semibold text-primary-600">{{actividad.costo}}</span>
+                      </div>
+                    </div>
+
+                    <!-- Detalles de inclusión -->
+                    <div class="grid grid-cols-2 gap-6">
+                      <div class="bg-green-50 p-4 rounded-lg">
+                        <h6 class="font-semibold text-green-700 mb-3 flex items-center">
+                          <i class="pi pi-check-circle mr-2"></i>
+                          Incluye
+                        </h6>
+                        <ul class="space-y-2">
+                          <li *ngFor="let item of actividad.incluye"
+                              class="text-green-600 flex items-start">
+                            <i class="pi pi-check mr-2 mt-1"></i>
+                            <span>{{item}}</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="bg-red-50 p-4 rounded-lg">
+                        <h6 class="font-semibold text-red-700 mb-3 flex items-center">
+                          <i class="pi pi-times-circle mr-2"></i>
+                          No incluye
+                        </h6>
+                        <ul class="space-y-2">
+                          <li *ngFor="let item of actividad.noIncluye"
+                              class="text-red-600 flex items-start">
+                            <i class="pi pi-times mr-2 mt-1"></i>
+                            <span>{{item}}</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Desglose de costos -->
+            <div class="w-full mb-8 bg-gradient-to-r from-gray-50 to-white p-8 rounded-xl shadow-lg">
+              <h4 class="text-2xl font-bold mb-6 text-primary-600 text-center">Desglose de Costos</h4>
+
+              <!-- Costo de transporte -->
+              <div class="mb-6">
+                <h5 class="font-semibold mb-3 text-lg">Transporte</h5>
+                <div class="grid grid-cols-2 gap-6">
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-gray-600 mb-2"><strong>Ida:</strong> {{recomendacion.costoTransporte.costoIda}}</p>
+                    <p class="text-gray-600"><strong>Vuelta:</strong> {{recomendacion.costoTransporte.costoVuelta}}</p>
+                  </div>
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-gray-600"><strong>Total transporte:</strong> {{calcularTotalTransporte(recomendacion.costoTransporte) | currency}}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Costo de actividades -->
+              <div class="mb-6">
+                <h5 class="font-semibold mb-3 text-lg">Actividades</h5>
+                <div class="grid grid-cols-2 gap-6">
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <ul class="list-disc pl-5">
+                      <li *ngFor="let actividad of recomendacion.actividades" class="text-gray-600 mb-2">
+                        {{actividad.nombre}}: {{actividad.costo}}
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-gray-600"><strong>Total actividades:</strong>
+                      {{calcularTotalActividades(recomendacion.actividades) | currency}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Costo de comidas -->
+              <div class="mb-6">
+                <h5 class="font-semibold mb-3 text-lg">Comidas</h5>
+                <div class="grid grid-cols-2 gap-6">
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <ul class="list-disc pl-5">
+                      <li *ngFor="let lugar of recomendacion.lugaresComida" class="text-gray-600 mb-2">
+                        {{lugar.nombre}}: {{lugar.costoAproximado}}
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-gray-600"><strong>Total comidas:</strong>
+                      {{calcularTotalComidas(recomendacion.lugaresComida) | currency}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Costo total -->
+              <div class="mt-6 pt-6 border-t border-gray-200">
+                <h5 class="text-2xl font-bold text-primary-600 text-center mb-4">Costo Total Estimado</h5>
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                  <p class="text-3xl font-bold text-center text-primary-600 mb-4">
+                    {{formatearCosto(calcularTotalRecomendacion(recomendacion))}}
+                  </p>
+                  <div class="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <p class="text-gray-500">Transporte</p>
+                      <p class="font-semibold">{{formatearCosto(calcularTotalTransporte(recomendacion.costoTransporte))}}</p>
+                    </div>
+                    <div>
+                      <p class="text-gray-500">Actividades</p>
+                      <p class="font-semibold">{{formatearCosto(calcularTotalActividades(recomendacion.actividades))}}</p>
+                    </div>
+                    <div>
+                      <p class="text-gray-500">Comidas</p>
+                      <p class="font-semibold">{{formatearCosto(calcularTotalComidas(recomendacion.lugaresComida))}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lugares para comer -->
+            <div class="w-full mb-8">
+              <h4 class="text-2xl font-bold mb-6 text-primary-600 text-center">Lugares para Comer</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div *ngFor="let lugar of recomendacion.lugaresComida"
+                     class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                  <h5 class="text-xl font-semibold mb-3 text-primary-500">{{lugar.nombre}}</h5>
+                  <div class="space-y-2">
+                    <p class="text-gray-600"><strong>Tipo:</strong> {{lugar.tipo}}</p>
+                    <p class="text-gray-600"><strong>Costo aprox.:</strong> {{lugar.costoAproximado}}</p>
+                    <p class="text-gray-600"><strong>Horario:</strong> {{lugar.horario}}</p>
+                    <p class="text-gray-600"><strong>Ubicación:</strong> {{lugar.ubicacion}}</p>
+                    <p class="text-gray-600"><strong>Especialidad:</strong> {{lugar.especialidad}}</p>
+                  </div>
+                  <p class="text-gray-600 mt-4">{{lugar.descripcion}}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Información de transporte -->
+            <div class="w-full mb-8">
+              <h4 class="text-2xl font-bold mb-6 text-primary-600 text-center">Información de Transporte</h4>
+              <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <p class="text-gray-600 mb-2"><strong>Tipo de transporte:</strong> {{recomendacion.costoTransporte.tipoTransporte}}</p>
+                    <p class="text-gray-600 mb-2"><strong>Duración del viaje:</strong> {{recomendacion.costoTransporte.duracionViaje}}</p>
+                    <p class="text-gray-600 mb-2"><strong>Frecuencia:</strong> {{recomendacion.costoTransporte.frecuencia}}</p>
+                  </div>
+                  <div>
+                    <p class="text-gray-600 mb-2"><strong>Punto de partida:</strong> {{recomendacion.costoTransporte.puntoPartida}}</p>
+                    <p class="text-gray-600 mb-2"><strong>Punto de llegada:</strong> {{recomendacion.costoTransporte.puntoLlegada}}</p>
+                    <p class="text-gray-600"><strong>Observaciones:</strong> {{recomendacion.costoTransporte.observaciones}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalles adicionales -->
+            <div class="w-full">
+              <h4 class="text-2xl font-bold mb-6 text-primary-600 text-center">Detalles Adicionales</h4>
+              <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <p class="text-gray-600 mb-4"><strong>Mejor época:</strong> {{recomendacion.detallesAdicionales?.mejorEpoca}}</p>
+                    <div>
+                      <h5 class="font-semibold mb-2">Recomendaciones:</h5>
+                      <ul class="list-disc pl-5 text-gray-600">
+                        <li *ngFor="let rec of recomendacion.detallesAdicionales?.recomendaciones">
+                          {{rec}}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div>
+                    <h5 class="font-semibold mb-2">Tips:</h5>
+                    <ul class="list-disc pl-5 text-gray-600">
+                      <li *ngFor="let tip of recomendacion.detallesAdicionales?.tips">
+                        {{tip}}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botón para agregar a itinerarios -->
+            <div class="mt-8">
+              <p-button label="Agregar a itinerarios"
+                       icon="pi pi-plus"
+                       class="p-button-rounded p-button-lg"
+                       (onClick)="agregarRecomendacion(recomendacion)">
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-carousel>
+  </p-card>
+</div>

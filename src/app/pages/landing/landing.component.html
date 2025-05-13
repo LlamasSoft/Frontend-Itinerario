@@ -2,29 +2,42 @@
   <!-- Hero Section -->
   <div class="container mx-auto px-4 py-16">
     <div class="flex flex-col md:flex-row items-center justify-between gap-12">
-      <div class="flex-1">
+      <div class="flex-1" pAnimateOnScroll enterClass="fadeinleft" leaveClass="fadeoutleft">
+        <div class="inline-block bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+          ✨ La nueva forma de viajar
+        </div>
         <h1 class="text-4xl md:text-6xl font-bold text-primary-700 mb-6">
-          Planifica tu viaje perfecto con IA
+          Planifica tu viaje perfecto con <span class="text-primary-500">IA</span>
         </h1>
         <p class="text-xl text-gray-600 mb-8">
           Descubre destinos increíbles, crea itinerarios personalizados y vive experiencias únicas con la ayuda de nuestra inteligencia artificial.
         </p>
-        <div class="flex gap-4">
+        <div class="flex flex-col sm:flex-row gap-4">
           <p-button
             label="Comenzar"
             icon="pi pi-compass"
-            routerLink="/generar-itinerario"
-            class="p-button-lg">
+            (onClick)="navigateToItinerario()"
+            class="p-button-lg p-button-outlined">
           </p-button>
           <p-button
             label="Ver ejemplos"
             icon="pi pi-images"
             severity="secondary"
-            class="p-button-lg">
+            class="p-button-lg p-button-outlined">
           </p-button>
         </div>
+        <div class="mt-8 flex items-center gap-4 text-sm text-gray-500">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-check-circle text-primary-500"></i>
+            <span>Planificación en minutos</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-check-circle text-primary-500"></i>
+            <span>100% personalizable</span>
+          </div>
+        </div>
       </div>
-      <div class="flex-1">
+      <div class="flex-1" pAnimateOnScroll enterClass="fadeinright" leaveClass="fadeoutright">
         <img src="/viajero.png"
              alt="Viajero explorando el mundo"
              class="w-full h-148 rounded-lg">
@@ -34,14 +47,21 @@
 
   <!-- Features Section -->
   <div class="container mx-auto px-4 py-16">
-    <h2 class="text-3xl font-bold text-center text-primary-700 mb-12">
-      Características principales
-    </h2>
+    <div class="text-center mb-12">
+      <div class="inline-block bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+        Características destacadas
+      </div>
+      <h2 class="text-3xl font-bold text-primary-700" pAnimateOnScroll enterClass="fadein" leaveClass="fadeout">
+        Todo lo que necesitas para tu viaje
+      </h2>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <p-card class="hover:shadow-lg transition-all duration-300">
+      <p-card class="hover:shadow-lg transition-all duration-300 border-l-4 border-primary-500" pAnimateOnScroll enterClass="fadeinup" leaveClass="fadeoutup">
         <ng-template pTemplate="header">
           <div class="flex justify-center p-4">
-            <i class="pi pi-compass text-4xl text-primary-500"></i>
+            <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+              <i class="pi pi-compass text-3xl text-primary-500"></i>
+            </div>
           </div>
         </ng-template>
         <h3 class="text-xl font-bold text-center mb-4">Itinerarios Personalizados</h3>
@@ -50,10 +70,12 @@
         </p>
       </p-card>
 
-      <p-card class="hover:shadow-lg transition-all duration-300">
+      <p-card class="hover:shadow-lg transition-all duration-300 border-l-4 border-primary-500" pAnimateOnScroll enterClass="fadeinup" leaveClass="fadeoutup" [style.animationDelay]="'100ms'">
         <ng-template pTemplate="header">
           <div class="flex justify-center p-4">
-            <i class="pi pi-map-marker text-4xl text-primary-500"></i>
+            <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+              <i class="pi pi-map-marker text-3xl text-primary-500"></i>
+            </div>
           </div>
         </ng-template>
         <h3 class="text-xl font-bold text-center mb-4">Destinos Únicos</h3>
@@ -62,10 +84,12 @@
         </p>
       </p-card>
 
-      <p-card class="hover:shadow-lg transition-all duration-300">
+      <p-card class="hover:shadow-lg transition-all duration-300 border-l-4 border-primary-500" pAnimateOnScroll enterClass="fadeinup" leaveClass="fadeoutup" [style.animationDelay]="'200ms'">
         <ng-template pTemplate="header">
           <div class="flex justify-center p-4">
-            <i class="pi pi-wallet text-4xl text-primary-500"></i>
+            <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+              <i class="pi pi-wallet text-3xl text-primary-500"></i>
+            </div>
           </div>
         </ng-template>
         <h3 class="text-xl font-bold text-center mb-4">Control de Presupuesto</h3>
@@ -76,21 +100,84 @@
     </div>
   </div>
 
-  <!-- CTA Section -->
-  <div class="container mx-auto px-4 py-16">
-    <div class="bg-primary-600 rounded-2xl p-8 md:p-12 text-center text-white">
-      <h2 class="text-3xl font-bold mb-4">
-        ¿Listo para comenzar tu aventura?
-      </h2>
-      <p class="text-xl mb-8">
-        Crea tu primer itinerario personalizado en minutos.
-      </p>
-      <p-button
-        label="Generar Itinerario"
-        icon="pi pi-compass"
-        class="p-button-lg p-button-outlined"
-        routerLink="/generar-itinerario">
-      </p-button>
+  <!-- Ventajas Section -->
+  <div class="container mx-auto px-4 py-16 bg-primary-50 rounded-2xl my-8">
+    <h2 class="text-3xl font-bold text-center text-primary-700 mb-12" pAnimateOnScroll enterClass="fadein" leaveClass="fadeout">
+      ¿Por qué elegir Itinerario AI?
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-white p-6 rounded-xl shadow-md" pAnimateOnScroll enterClass="fadeinleft" leaveClass="fadeoutleft">
+        <div class="flex items-center gap-4 mb-4">
+          <i class="pi pi-clock text-3xl text-primary-500"></i>
+          <h3 class="text-xl font-bold">Ahorra tiempo y energía</h3>
+        </div>
+        <p class="text-gray-600">
+          Deja atrás las horas de planificación. Nuestra IA crea itinerarios completos en minutos, considerando tus preferencias y restricciones.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-md" pAnimateOnScroll enterClass="fadeinright" leaveClass="fadeoutright">
+        <div class="flex items-center gap-4 mb-4">
+          <i class="pi pi-calendar-plus text-3xl text-primary-500"></i>
+          <h3 class="text-xl font-bold">Seguimiento completo</h3>
+        </div>
+        <p class="text-gray-600">
+          Mantén un control detallado de tu itinerario, con información de horarios, ubicaciones y actividades programadas.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-md" pAnimateOnScroll enterClass="fadeinleft" leaveClass="fadeoutleft">
+        <div class="flex items-center gap-4 mb-4">
+          <i class="pi pi-pencil text-3xl text-primary-500"></i>
+          <h3 class="text-xl font-bold">Personalización flexible</h3>
+        </div>
+        <p class="text-gray-600">
+          Modifica tu itinerario en cualquier momento. Ajusta actividades, horarios y destinos según tus necesidades.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-md" pAnimateOnScroll enterClass="fadeinright" leaveClass="fadeoutright">
+        <div class="flex items-center gap-4 mb-4">
+          <i class="pi pi-map text-3xl text-primary-500"></i>
+          <h3 class="text-xl font-bold">Recomendaciones inteligentes</h3>
+        </div>
+        <p class="text-gray-600">
+          Obtén sugerencias de hoteles y restaurantes cercanos a cada destino, optimizando tu tiempo y experiencia.
+        </p>
+      </div>
     </div>
   </div>
+
+  <!-- CTA Section -->
+  <div class="container mx-auto px-4 py-16">
+    <div class="bg-white rounded-3xl p-8 md:p-12 text-center shadow-xl relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-48 h-48 bg-primary-100 rounded-full opacity-50"></div>
+      <div class="absolute bottom-0 left-0 w-32 h-32 bg-primary-200 rounded-full opacity-50"></div>
+
+      <div class="relative z-10">
+        <h2 class="text-3xl font-bold text-primary-700 mb-4" pAnimateOnScroll enterClass="fadein" leaveClass="fadeout">
+          ¿Listo para comenzar tu aventura?
+        </h2>
+        <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          Crea tu primer itinerario personalizado en minutos y descubre una nueva forma de viajar.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <p-button
+            label="Generar Itinerario"
+            icon="pi pi-compass"
+            (onClick)="navigateToItinerario()"
+            class="p-button-lg p-button-outlined">
+          </p-button>
+          <p-button
+            label="Ver más información"
+            icon="pi pi-info-circle"
+            severity="secondary"
+            class="p-button-lg p-button-outlined">
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
 </div>

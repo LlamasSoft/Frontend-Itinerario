@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class ChatService {
   private apiUrl = 'http://localhost:8000/api/deepseek/';
   private imagesUrl = 'http://127.0.0.1:8000/api/images/';
+  private climaUrl = 'http://localhost:8000/api/clima/';
 
   constructor(private http: HttpClient) { }
 
@@ -17,5 +18,14 @@ export class ChatService {
 
   obtenerImagenesLugar(nombreLugar: string): Observable<any> {
     return this.http.post(this.imagesUrl, { nombre_lugar: nombreLugar });
+  }
+
+  obtenerClima(ciudad: string, pais: string): Observable<any> {
+    return this.http.get(this.climaUrl, {
+      params: {
+        ciudad: ciudad,
+        pais: pais
+      }
+    });
   }
 }

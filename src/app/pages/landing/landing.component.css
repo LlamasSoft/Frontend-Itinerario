@@ -58,3 +58,111 @@
     font-size: 1rem;
   }
 }
+
+/* Animaciones de AnimateOnScroll */
+:host ::ng-deep .fadein {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+:host ::ng-deep .fadeinleft {
+  animation: fadeInLeft 0.5s ease-out forwards;
+}
+
+:host ::ng-deep .fadeinright {
+  animation: fadeInRight 0.5s ease-out forwards;
+}
+
+:host ::ng-deep .fadeinup {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+:host ::ng-deep .fadeout {
+  animation: fadeOut 0.5s ease-out forwards;
+}
+
+:host ::ng-deep .fadeoutleft {
+  animation: fadeOutLeft 0.5s ease-out forwards;
+}
+
+:host ::ng-deep .fadeoutright {
+  animation: fadeOutRight 0.5s ease-out forwards;
+}
+
+:host ::ng-deep .fadeoutup {
+  animation: fadeOutUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+@keyframes fadeOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}

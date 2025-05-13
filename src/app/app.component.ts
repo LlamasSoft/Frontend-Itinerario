@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
     {
       label: 'Generar Itinerario',
       icon: 'pi pi-compass',
-      routerLink: '/'
+      routerLink: '/generar-itinerario'
     },
     {
       label: 'Itinerarios',
