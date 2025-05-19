@@ -140,15 +140,15 @@
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
+
   :host ::ng-deep .p-timeline .p-timeline-event-connector {
     left: 0.75rem;
   }
-  
+
   :host ::ng-deep .p-timeline .p-timeline-event-marker {
     left: 0.5rem;
   }
-  
+
   .actividad-card {
     margin-left: 1.5rem;
   }
@@ -163,5 +163,54 @@
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+:host ::ng-deep .p-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .p-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+:host ::ng-deep .p-card .p-card-header {
+  background: transparent;
+  padding: 0;
+}
+
+:host ::ng-deep .p-card .p-card-content {
+  padding: 1.5rem;
+}
+
+:host ::ng-deep .p-card .p-card-footer {
+  padding: 1rem 1.5rem;
+  background-color: var(--surface-ground);
+  border-top: 1px solid var(--surface-border);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  :host ::ng-deep .p-card .p-card-content {
+    padding: 1rem;
   }
 }

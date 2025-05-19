@@ -40,11 +40,6 @@ export class AppComponent implements OnInit {
       label: 'Itinerarios',
       icon: 'pi pi-list',
       routerLink: '/itinerarios'
-    },
-    {
-      label: 'Configuración',
-      icon: 'pi pi-cog',
-      routerLink: '/configuracion'
     }
   ];
 
@@ -58,10 +53,6 @@ export class AppComponent implements OnInit {
       {
         label: 'Mi Perfil',
         icon: 'pi pi-user'
-      },
-      {
-        label: 'Configuración',
-        icon: 'pi pi-cog'
       },
       {
         separator: true
