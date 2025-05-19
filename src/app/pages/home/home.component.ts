@@ -262,9 +262,13 @@ export class HomeComponent implements OnInit {
     const mensaje = this.miForm.get('mensaje')?.value;
     if (!mensaje?.trim()) return;
 
+    console.log('=== INICIO DEL PROCESO DE ENVÍO DE MENSAJE ===');
+    console.log('Mensaje del usuario:', mensaje);
+
     // Procesar preferencias del mensaje
     const preferencias = MessageProcessorUtil.procesarPreferencias(mensaje);
     this.preferenciasUsuario = [...new Set([...this.preferenciasUsuario, ...preferencias])];
+    console.log('Preferencias procesadas:', this.preferenciasUsuario);
 
     // Agregar mensaje del usuario
     this.mensajes.push({
@@ -275,6 +279,16 @@ export class HomeComponent implements OnInit {
 
     try {
       // Paso 1: Obtener lugares recomendados
+      console.log('\n=== PASO 1: OBTENCIÓN DE LUGARES RECOMENDADOS ===');
+      console.log('Datos del formulario:', {
+        presupuesto: this.miForm.get('presupuesto')?.value,
+        moneda: this.miForm.get('moneda')?.value,
+        diasViaje: this.miForm.get('diasViaje')?.value,
+        fechaSalida: this.miForm.get('fechaSalida')?.value,
+        lugarSalida: this.miForm.get('lugarSalida')?.value,
+        destinos: this.miForm.get('destinos')?.value
+      });
+
       const promptLugares = MessageProcessorUtil.generarPromptLugares(
         mensaje,
         this.miForm.get('presupuesto')?.value,
@@ -288,23 +302,53 @@ export class HomeComponent implements OnInit {
 
       console.log('Prompt enviado a DeepSeek para lugares:', promptLugares);
       const respuestaLugares = await this.chatService.enviarMensaje(promptLugares).toPromise();
-      console.log('Respuesta de DeepSeek para lugares:', respuestaLugares);
+      console.log('Respuesta completa de DeepSeek para lugares:', respuestaLugares);
 
       // Extraer el JSON de la respuesta
       const lugares = this.extraerJSONDeRespuesta(respuestaLugares.data);
-      console.log('Lugares extraídos:', lugares);
+      console.log('Lugares extraídos y procesados:', lugares);
 
-      // Paso 2: Obtener clima para cada lugar
-      const promesasClima = lugares.lugares.map((lugar: LugarRecomendado) => {
+      // Agregar mensaje inicial con los lugares recomendados
+      this.mensajes.push({
+        texto: lugares.mensaje,
+        esUsuario: false,
+        fecha: new Date()
+      });
+
+      // Paso 2: Obtener clima para cada lugar (optimizado para no repetir ciudades)
+      console.log('\n=== PASO 2: OBTENCIÓN DEL CLIMA ===');
+      
+      // Crear un mapa de ciudades únicas
+      const ciudadesUnicas = new Map<string, { ciudad: string; pais: string }>();
+      lugares.lugares.forEach((lugar: LugarRecomendado) => {
         const ciudadNormalizada = this.normalizarTexto(lugar.ciudad);
         const paisNormalizado = this.normalizarTexto(lugar.pais);
-        console.log(`Solicitando clima para: ${ciudadNormalizada}, ${paisNormalizado}`);
-        return this.chatService.obtenerClima(ciudadNormalizada, paisNormalizado).toPromise();
+        const key = `${ciudadNormalizada}-${paisNormalizado}`;
+        if (!ciudadesUnicas.has(key)) {
+          ciudadesUnicas.set(key, { ciudad: ciudadNormalizada, pais: paisNormalizado });
+        }
       });
+
+      console.log('Ciudades únicas para consultar clima:', Array.from(ciudadesUnicas.values()));
+
+      // Consultar clima solo para ciudades únicas
+      const promesasClima = Array.from(ciudadesUnicas.values()).map(({ ciudad, pais }) => {
+        console.log(`Preparando consulta de clima para: ${ciudad}, ${pais}`);
+        return this.chatService.obtenerClima(ciudad, pais).toPromise();
+      });
+
       const climas = await Promise.all(promesasClima);
       console.log('Respuestas de la API de clima:', climas);
 
+      // Crear un mapa de clima por ciudad
+      const climaPorCiudad = new Map();
+      Array.from(ciudadesUnicas.values()).forEach(({ ciudad, pais }, index) => {
+        const key = `${ciudad}-${pais}`;
+        climaPorCiudad.set(key, climas[index]);
+      });
+
       // Paso 3: Generar itinerario con información del clima
+      console.log('\n=== PASO 3: GENERACIÓN DE ITINERARIO ===');
       const promptItinerario = MessageProcessorUtil.generarPromptItinerario(
         mensaje,
         this.miForm.get('presupuesto')?.value,
@@ -315,17 +359,18 @@ export class HomeComponent implements OnInit {
         this.preferenciasUsuario,
         this.miForm.get('moneda')?.value.value,
         lugares.lugares,
-        climas
+        Array.from(climaPorCiudad.values())
       );
 
       console.log('Prompt enviado a DeepSeek para itinerario:', promptItinerario);
       const respuestaItinerario = await this.chatService.enviarMensaje(promptItinerario).toPromise();
-      console.log('Respuesta de DeepSeek para itinerario:', respuestaItinerario);
+      console.log('Respuesta completa de DeepSeek para itinerario:', respuestaItinerario);
 
       // Extraer el JSON de la respuesta del itinerario
       const itinerario = this.extraerJSONDeRespuesta(respuestaItinerario.data);
+      console.log('Itinerario extraído y procesado:', itinerario);
 
-      // Agregar respuesta del asistente
+      // Agregar respuesta del asistente con el itinerario y consideraciones del clima
       this.mensajes.push({
         texto: itinerario.mensaje,
         esUsuario: false,
@@ -335,12 +380,19 @@ export class HomeComponent implements OnInit {
       // Actualizar recomendaciones
       if (itinerario.recomendaciones) {
         this.recomendaciones = itinerario.recomendaciones;
+        console.log('Recomendaciones actualizadas:', this.recomendaciones);
       }
+
+      console.log('\n=== FIN DEL PROCESO DE ENVÍO DE MENSAJE ===');
 
       // Limpiar el input
       this.miForm.get('mensaje')?.setValue('');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al procesar el mensaje:', error);
+      console.error('Detalles del error:', {
+        mensaje: error.message,
+        stack: error.stack
+      });
       this.mensajes.push({
         texto: 'Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo.',
         esUsuario: false,

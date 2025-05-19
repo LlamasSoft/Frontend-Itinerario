@@ -1,0 +1,67 @@
+Para regristar el viaje:
+     {
+         "presupuesto": 1000.00,
+         "dia_salida": "2024-03-20",
+         "ciudad_salida_id": 1,
+         "duracion_viaje": 5,
+         "estado": "pendiente"
+     }
+
+
+Para registrar el lugar:
+     {
+         "nombre": "Plaza Mayor",
+         "descripcion": "Plaza central histórica",
+         "ubicacion": "Centro histórico",
+         "tipo_lugar_id": 1,
+         "estado": "pendiente"
+     }
+
+Para registrar itinerario:
+     {
+         "lugar": "Plaza Mayor",
+         "ciudad_id": 1,
+         "pais_id": 1,
+         "dia": 1,
+         "costo": 50.00,
+         "estado": "pendiente",
+         "viaje_id": 1,
+         "clima_id": 1,
+         "transporte_id": 1
+     }
+
+registrar actividad:
+     {
+         "turno": "M",   (M = Mañana, T= Tarde, N= Noche)
+         "orden": 1, Para saber que actividad va primero
+         "estado": "pendiente",
+         "itinerario_id": 1,
+         "lugares_ids": [1, 2, 3]
+     }
+
+
+Registrar actividad_lugar:
+
+     {
+         "actividad_id": 1,
+         "lugar_id": 1
+     }
+
+
+Y para obtener los ids de ciudad y pais:
+GET /obtener-ids/?ciudad=Madrid&pais=España
+Se envia sin tildes
+
+
+
+
+# Nuevas rutas para registro
+    path('registrar/viaje/', registrar_viaje, name='registrar_viaje'),
+    path('registrar/clima/', registrar_clima, name='registrar_clima'),
+    path('registrar/lugar/', registrar_lugar, name='registrar_lugar'),
+    path('registrar/itinerario/', registrar_itinerario, name='registrar_itinerario'),
+    path('registrar/actividad/', registrar_actividad, name='registrar_actividad'),
+    path('registrar/actividad-lugar/', registrar_actividad_lugar, name='registrar_actividad_lugar'),
+    
+    # Nueva ruta para obtener IDs
+    path('obtener-ids/', obtener_ids_ciudad_pais, name='obtener_ids_ciudad_pais'),

@@ -31,7 +31,7 @@ Proporciona recomendaciones de lugares en formato JSON:
   "lugares": [
     {
       "nombre": "Nombre del lugar",
-      "ciudad": "Ciudad",
+      "ciudad": "Nombre de la ciudad (sin paréntesis ni información adicional)",
       "pais": "País",
       "tipo": "Tipo de lugar (museo, parque, restaurante, etc.)",
       "costoAproximado": "Rango de precios",
@@ -44,7 +44,14 @@ Consideraciones:
 2. Prioriza lugares según preferencias: ${preferenciasUsuario.join(', ')}
 3. Incluye al menos 3 lugares por recomendación
 4. Usa nombres específicos de lugares
-5. Se debe usar todo el presupuesto para los destinos seleccionados, teniendo en cuenta que el presupuesto es el total del viaje`;
+5. Se debe usar todo el presupuesto para los destinos seleccionados, teniendo en cuenta que el presupuesto es el total del viaje
+6. IMPORTANTE: El campo "ciudad" debe contener SOLO el nombre de la ciudad, sin paréntesis ni información adicional. Por ejemplo:
+   - Correcto: "ciudad": "Lima"
+   - Incorrecto: "ciudad": "Lima (capital de Perú)"
+   - Incorrecto: "ciudad": "Lunahuana (a 3 horas de Lima)"
+7. IMPORTANTE: Los destinos seleccionados son departamentos. Debes recomendar lugares en ciudades específicas dentro de esos departamentos. Por ejemplo:
+   - Si el destino es "Cajamarca" (departamento), puedes recomendar lugares en "Cajamarca" (ciudad), "Celendín", "Chota", etc.
+   - Si el destino es "Cusco" (departamento), puedes recomendar lugares en "Cusco" (ciudad), "Ollantaytambo", "Pisac", etc.`;
   }
 
   static generarPromptItinerario(
@@ -136,7 +143,7 @@ Proporciona recomendaciones en formato JSON:
     "detallesAdicionales": {
       "mejorEpoca": "Época recomendada",
       "recomendaciones": ["Rec 1", "Rec 2"],
-      "tips": ["Tip 1", "Tip 2"]
+      "consideracionesClima": ["Consideración 1", "Consideración 2"]
     }
   }]
 }
@@ -148,6 +155,10 @@ Consideraciones:
 4. Especifica claramente qué incluye cada costo
 5. Usa nombres específicos de lugares
 6. Incluir al menos 2 actividades y 2 lugares de comida por recomendación
-7. Considera el clima pronosticado para cada día al planificar las actividades`;
+7. Considera el clima pronosticado para cada día al planificar las actividades
+8. IMPORTANTE: El campo "ubicacion" en lugaresComida debe contener SOLO el nombre de la ciudad, sin paréntesis ni información adicional
+9. IMPORTANTE: Los destinos seleccionados son departamentos. Debes recomendar actividades en ciudades específicas dentro de esos departamentos. Por ejemplo:
+   - Si el destino es "Cajamarca" (departamento), puedes recomendar actividades en "Cajamarca" (ciudad), "Celendín", "Chota", etc.
+   - Si el destino es "Cusco" (departamento), puedes recomendar actividades en "Cusco" (ciudad), "Ollantaytambo", "Pisac", etc.`;
   }
 }

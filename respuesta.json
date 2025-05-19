@@ -1,0 +1,301 @@
+{
+    "mensaje": "Dado el presupuesto de 500 PEN y la preferencia por aventura, aquí tienes recomendaciones para tu viaje a Cajamarca. Considera que el clima será lluvioso, así que lleva ropa adecuada y equipo impermeable.",
+    "recomendaciones": [
+        {
+            "titulo": "Cumbe Mayo",
+            "descripcion": "Sitio arqueológico y natural con impresionantes acueductos tallados en roca, ubicado a 20 km de la ciudad de Cajamarca.",
+            "actividades": [
+                {
+                    "nombre": "Exploración de acueductos",
+                    "descripcion": "Recorrido por los antiguos acueductos preincaicos y formaciones rocosas.",
+                    "costo": "20-40 PEN (incluye entrada y transporte compartido desde Cajamarca)",
+                    "duracion": "3-4 horas",
+                    "incluye": [
+                        "Guía local",
+                        "Transporte ida y vuelta"
+                    ],
+                    "noIncluye": [
+                        "Comida",
+                        "Equipo de lluvia"
+                    ]
+                },
+                {
+                    "nombre": "Senderismo a las cuevas",
+                    "descripcion": "Caminata hacia las cuevas cercanas con vistas panorámicas.",
+                    "costo": "Incluido en la entrada",
+                    "duracion": "1-2 horas",
+                    "incluye": [
+                        "Acceso a senderos"
+                    ],
+                    "noIncluye": [
+                        "Guía especializado",
+                        "Seguro"
+                    ]
+                }
+            ],
+            "lugaresComida": [
+                {
+                    "nombre": "El Batán del Tayta",
+                    "tipo": "Comida típica",
+                    "descripcion": "Restaurante conocido por sus platos tradicionales de la región.",
+                    "costoAproximado": "15-30 PEN por plato",
+                    "horario": "12:00 - 21:00",
+                    "ubicacion": "Cajamarca",
+                    "especialidad": "Cuy al horno"
+                },
+                {
+                    "nombre": "Cafetería Qillqay",
+                    "tipo": "Café y snacks",
+                    "descripcion": "Lugar acogedor para tomar un café caliente después de la aventura.",
+                    "costoAproximado": "8-15 PEN por bebida",
+                    "horario": "08:00 - 20:00",
+                    "ubicacion": "Cajamarca",
+                    "especialidad": "Café de altura"
+                }
+            ],
+            "costoTransporte": {
+                "tipoTransporte": "Combi compartida",
+                "costoIda": "10 PEN",
+                "costoVuelta": "10 PEN",
+                "duracionViaje": "45 minutos",
+                "frecuencia": "Cada 30 minutos",
+                "puntoPartida": "Cajamarca (Plaza de Armas)",
+                "puntoLlegada": "Cumbe Mayo",
+                "observaciones": "Los vehículos pueden estar llenos en horas pico."
+            },
+            "detallesAdicionales": {
+                "mejorEpoca": "Temporada seca (abril-octubre)",
+                "recomendaciones": [
+                    "Llevar zapatos antideslizantes",
+                    "Contratar un guía local para mejor experiencia"
+                ],
+                "consideracionesClima": [
+                    "Llevar impermeable o poncho",
+                    "Las rocas pueden estar resbaladizas por la lluvia"
+                ]
+            }
+        },
+        {
+            "titulo": "Baños del Inca",
+            "descripcion": "Aguas termales con propiedades medicinales, ubicadas a 6 km de la ciudad de Cajamarca.",
+            "actividades": [
+                {
+                    "nombre": "Relajación en aguas termales",
+                    "descripcion": "Baño en piscinas de agua termal con diferentes temperaturas.",
+                    "costo": "15-30 PEN (entrada a piscinas públicas)",
+                    "duracion": "2-3 horas",
+                    "incluye": [
+                        "Acceso a piscinas"
+                    ],
+                    "noIncluye": [
+                        "Toalla",
+                        "Traje de baño"
+                    ]
+                },
+                {
+                    "nombre": "Masajes terapéuticos",
+                    "descripcion": "Masajes con barro medicinal de la zona.",
+                    "costo": "30-50 PEN adicionales",
+                    "duracion": "30-60 minutos",
+                    "incluye": [
+                        "Sesión de masaje"
+                    ],
+                    "noIncluye": [
+                        "Productos adicionales"
+                    ]
+                }
+            ],
+            "lugaresComida": [
+                {
+                    "nombre": "Restaurante Los Jazmines",
+                    "tipo": "Comida regional",
+                    "descripcion": "Ubicado cerca de los baños, ideal para comer después del relax.",
+                    "costoAproximado": "20-35 PEN por plato",
+                    "horario": "11:00 - 18:00",
+                    "ubicacion": "Cajamarca",
+                    "especialidad": "Caldo de gallina"
+                },
+                {
+                    "nombre": "Chifa Jin Long",
+                    "tipo": "Comida china",
+                    "descripcion": "Opción económica cerca del centro de Cajamarca.",
+                    "costoAproximado": "12-25 PEN por plato",
+                    "horario": "12:00 - 22:00",
+                    "ubicacion": "Cajamarca",
+                    "especialidad": "Arroz chaufa"
+                }
+            ],
+            "costoTransporte": {
+                "tipoTransporte": "Taxi colectivo",
+                "costoIda": "5 PEN",
+                "costoVuelta": "5 PEN",
+                "duracionViaje": "15 minutos",
+                "frecuencia": "Cada 10 minutos",
+                "puntoPartida": "Cajamarca (Av. Atahualpa)",
+                "puntoLlegada": "Baños del Inca",
+                "observaciones": "Puedes negociar precio para taxi privado (aprox. 15 PEN)"
+            },
+            "detallesAdicionales": {
+                "mejorEpoca": "Todo el año",
+                "recomendaciones": [
+                    "Llevar sandalias de baño",
+                    "Visitar temprano para evitar multitudes"
+                ],
+                "consideracionesClima": [
+                    "Las aguas termales son ideales para clima frío y lluvioso",
+                    "Hay áreas cubiertas para protegerse de la lluvia"
+                ]
+            }
+        }
+    ]
+}
+
+// Recomendaciones
+[
+    {
+        "titulo": "Cumbe Mayo",
+        "descripcion": "Sitio arqueológico y natural con impresionantes acueductos tallados en roca, ubicado a 20 km de la ciudad de Cajamarca.",
+        "actividades": [
+            {
+                "nombre": "Exploración de acueductos",
+                "descripcion": "Recorrido por los antiguos acueductos preincaicos y formaciones rocosas.",
+                "costo": "20-40 PEN (incluye entrada y transporte compartido desde Cajamarca)",
+                "duracion": "3-4 horas",
+                "incluye": [
+                    "Guía local",
+                    "Transporte ida y vuelta"
+                ],
+                "noIncluye": [
+                    "Comida",
+                    "Equipo de lluvia"
+                ]
+            },
+            {
+                "nombre": "Senderismo a las cuevas",
+                "descripcion": "Caminata hacia las cuevas cercanas con vistas panorámicas.",
+                "costo": "Incluido en la entrada",
+                "duracion": "1-2 horas",
+                "incluye": [
+                    "Acceso a senderos"
+                ],
+                "noIncluye": [
+                    "Guía especializado",
+                    "Seguro"
+                ]
+            }
+        ],
+        "lugaresComida": [
+            {
+                "nombre": "El Batán del Tayta",
+                "tipo": "Comida típica",
+                "descripcion": "Restaurante conocido por sus platos tradicionales de la región.",
+                "costoAproximado": "15-30 PEN por plato",
+                "horario": "12:00 - 21:00",
+                "ubicacion": "Cajamarca",
+                "especialidad": "Cuy al horno"
+            },
+            {
+                "nombre": "Cafetería Qillqay",
+                "tipo": "Café y snacks",
+                "descripcion": "Lugar acogedor para tomar un café caliente después de la aventura.",
+                "costoAproximado": "8-15 PEN por bebida",
+                "horario": "08:00 - 20:00",
+                "ubicacion": "Cajamarca",
+                "especialidad": "Café de altura"
+            }
+        ],
+        "costoTransporte": {
+            "tipoTransporte": "Combi compartida",
+            "costoIda": "10 PEN",
+            "costoVuelta": "10 PEN",
+            "duracionViaje": "45 minutos",
+            "frecuencia": "Cada 30 minutos",
+            "puntoPartida": "Cajamarca (Plaza de Armas)",
+            "puntoLlegada": "Cumbe Mayo",
+            "observaciones": "Los vehículos pueden estar llenos en horas pico."
+        },
+        "detallesAdicionales": {
+            "mejorEpoca": "Temporada seca (abril-octubre)",
+            "recomendaciones": [
+                "Llevar zapatos antideslizantes",
+                "Contratar un guía local para mejor experiencia"
+            ],
+            "consideracionesClima": [
+                "Llevar impermeable o poncho",
+                "Las rocas pueden estar resbaladizas por la lluvia"
+            ]
+        }
+    },
+    {
+        "titulo": "Baños del Inca",
+        "descripcion": "Aguas termales con propiedades medicinales, ubicadas a 6 km de la ciudad de Cajamarca.",
+        "actividades": [
+            {
+                "nombre": "Relajación en aguas termales",
+                "descripcion": "Baño en piscinas de agua termal con diferentes temperaturas.",
+                "costo": "15-30 PEN (entrada a piscinas públicas)",
+                "duracion": "2-3 horas",
+                "incluye": [
+                    "Acceso a piscinas"
+                ],
+                "noIncluye": [
+                    "Toalla",
+                    "Traje de baño"
+                ]
+            },
+            {
+                "nombre": "Masajes terapéuticos",
+                "descripcion": "Masajes con barro medicinal de la zona.",
+                "costo": "30-50 PEN adicionales",
+                "duracion": "30-60 minutos",
+                "incluye": [
+                    "Sesión de masaje"
+                ],
+                "noIncluye": [
+                    "Productos adicionales"
+                ]
+            }
+        ],
+        "lugaresComida": [
+            {
+                "nombre": "Restaurante Los Jazmines",
+                "tipo": "Comida regional",
+                "descripcion": "Ubicado cerca de los baños, ideal para comer después del relax.",
+                "costoAproximado": "20-35 PEN por plato",
+                "horario": "11:00 - 18:00",
+                "ubicacion": "Cajamarca",
+                "especialidad": "Caldo de gallina"
+            },
+            {
+                "nombre": "Chifa Jin Long",
+                "tipo": "Comida china",
+                "descripcion": "Opción económica cerca del centro de Cajamarca.",
+                "costoAproximado": "12-25 PEN por plato",
+                "horario": "12:00 - 22:00",
+                "ubicacion": "Cajamarca",
+                "especialidad": "Arroz chaufa"
+            }
+        ],
+        "costoTransporte": {
+            "tipoTransporte": "Taxi colectivo",
+            "costoIda": "5 PEN",
+            "costoVuelta": "5 PEN",
+            "duracionViaje": "15 minutos",
+            "frecuencia": "Cada 10 minutos",
+            "puntoPartida": "Cajamarca (Av. Atahualpa)",
+            "puntoLlegada": "Baños del Inca",
+            "observaciones": "Puedes negociar precio para taxi privado (aprox. 15 PEN)"
+        },
+        "detallesAdicionales": {
+            "mejorEpoca": "Todo el año",
+            "recomendaciones": [
+                "Llevar sandalias de baño",
+                "Visitar temprano para evitar multitudes"
+            ],
+            "consideracionesClima": [
+                "Las aguas termales son ideales para clima frío y lluvioso",
+                "Hay áreas cubiertas para protegerse de la lluvia"
+            ]
+        }
+    }
+]
