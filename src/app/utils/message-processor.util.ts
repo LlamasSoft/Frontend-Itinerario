@@ -12,16 +12,22 @@ export class MessageProcessorUtil {
     selectedCity: string,
     selectedDestinos: string[],
     preferenciasUsuario: string[],
-    moneda: string
+    moneda: string,
+    estadosPorCiudad: { [key: string]: string }
   ): string {
     const diasTexto = diasViaje === 1 ? 'día' : 'días';
+
+    // Crear mapeo de destinos a estados
+    const destinosConEstados = selectedDestinos.map(destino =>
+      `${destino} (${estadosPorCiudad[destino] || 'Estado no especificado'})`
+    ).join(', ');
 
     return `Contexto del viaje:
 - Presupuesto: ${presupuesto} ${moneda}
 - Duración: ${diasViaje} ${diasTexto}
 - Fecha: ${fechaSalida.toLocaleDateString()}
-- Origen: ${selectedCity || 'No especificado'}
-- Destinos: ${selectedDestinos.join(', ') || 'No especificados'}
+- Origen: ${selectedCity || 'No especificado'} (${estadosPorCiudad[selectedCity] || 'Estado no especificado'})
+- Destinos: ${destinosConEstados || 'No especificados'}
 - Preferencias: ${preferenciasUsuario.join(', ')}
 
 Proporciona recomendaciones de lugares en formato JSON:
@@ -51,7 +57,10 @@ Consideraciones:
    - Incorrecto: "ciudad": "Lunahuana (a 3 horas de Lima)"
 7. IMPORTANTE: Los destinos seleccionados son departamentos. Debes recomendar lugares en ciudades específicas dentro de esos departamentos. Por ejemplo:
    - Si el destino es "Cajamarca" (departamento), puedes recomendar lugares en "Cajamarca" (ciudad), "Celendín", "Chota", etc.
-   - Si el destino es "Cusco" (departamento), puedes recomendar lugares en "Cusco" (ciudad), "Ollantaytambo", "Pisac", etc.`;
+   - Si el destino es "Cusco" (departamento), puedes recomendar lugares en "Cusco" (ciudad), "Ollantaytambo", "Pisac", etc.
+8. IMPORTANTE: Las recomendaciones deben estar dentro del departamento (estado) especificado para cada destino. Por ejemplo:
+   - Si el destino es "Chiclayo" en el departamento de "Lambayeque", todas las recomendaciones deben ser de lugares dentro de Lambayeque
+   - Si el destino es "Trujillo" en el departamento de "La Libertad", todas las recomendaciones deben ser de lugares dentro de La Libertad`;
   }
 
   static generarPromptItinerario(
@@ -64,23 +73,33 @@ Consideraciones:
     preferenciasUsuario: string[],
     moneda: string,
     lugares: any[],
-    clima: any
+    clima: any,
+    estadosPorCiudad: { [key: string]: string },
+    considerarClima: boolean
   ): string {
     const diasTexto = diasViaje === 1 ? 'día' : 'días';
     const fechaFin = new Date(fechaSalida);
     fechaFin.setDate(fechaFin.getDate() + diasViaje - 1);
+
+    // Crear mapeo de destinos a estados
+    const destinosConEstados = selectedDestinos.map(destino =>
+      `${destino} (${estadosPorCiudad[destino] || 'Estado no especificado'})`
+    ).join(', ');
+
+    let contextoClima = '';
+    if (considerarClima) {
+      contextoClima = `\nInformación del clima (predicción para los próximos 3 días):
+${JSON.stringify(clima, null, 2)}`;
+    }
 
     return `Contexto del viaje:
 - Presupuesto: ${presupuesto} ${moneda}
 - Duración: ${diasViaje} ${diasTexto}
 - Fecha inicio: ${fechaSalida.toLocaleDateString()}
 - Fecha fin: ${fechaFin.toLocaleDateString()}
-- Origen: ${selectedCity || 'No especificado'}
-- Destinos: ${selectedDestinos.join(', ') || 'No especificados'}
-- Preferencias: ${preferenciasUsuario.join(', ')}
-
-Información del clima:
-${JSON.stringify(clima, null, 2)}
+- Origen: ${selectedCity || 'No especificado'} (${estadosPorCiudad[selectedCity] || 'Estado no especificado'})
+- Destinos: ${destinosConEstados || 'No especificados'}
+- Preferencias: ${preferenciasUsuario.join(', ')}${contextoClima}
 
 Lugares recomendados:
 ${JSON.stringify(lugares, null, 2)}
@@ -89,63 +108,59 @@ Proporciona recomendaciones en formato JSON:
 
 {
   "mensaje": "Respuesta general",
-  "recomendaciones": [{
-    "titulo": "Nombre específico del lugar",
-    "descripcion": "Descripción breve",
-    "actividades": [
-      {
-        "nombre": "Nombre actividad 1",
-        "descripcion": "Descripción breve",
-        "costo": "Costo con detalles de inclusión",
-        "duracion": "Duración",
-        "incluye": ["Item 1", "Item 2", "Item N..."],
-        "noIncluye": ["Item 1", "Item 2", "Item N..."]
+  "itinerarios": [
+    {
+      "dia": 1,
+      "fecha": "YYYY-MM-DD",
+      "lugar": "Nombre del lugar principal del día",
+      "ciudad": {
+        "name": "Nombre de la ciudad",
+        "state": {
+          "name": "Nombre del estado/departamento"
+        },
+        "country": {
+          "name": "Nombre del país"
+        }
       },
-      {
-        "nombre": "Nombre actividad 2",
-        "descripcion": "Descripción breve",
-        "costo": "Costo con detalles de inclusión",
-        "duracion": "Duración",
-        "incluye": ["Item 1", "Item 2", "Item N..."],
-        "noIncluye": ["Item 1", "Item 2", "Item N..."]
-      }
-    ],
-    "lugaresComida": [
-      {
-        "nombre": "Nombre lugar 1",
-        "tipo": "Tipo comida",
-        "descripcion": "Descripción breve",
-        "costoAproximado": "Rango de precios",
-        "horario": "Horario",
-        "ubicacion": "Ubicación",
-        "especialidad": "Especialidad"
+      "costo": "Costo total del día",
+      "clima": {
+        "fecha": "YYYY-MM-DD",
+        "ciudad": {
+          "name": "Nombre de la ciudad"
+        },
+        "pais": {
+          "name": "Nombre del país"
+        },
+        "temperatura_maxima": 0,
+        "temperatura_minima": 0,
+        "estado_clima": "Estado del clima",
+        "humedad": 0,
+        "probabilidad_lluvia": 0
       },
-      {
-        "nombre": "Nombre lugar 2",
-        "tipo": "Tipo comida",
-        "descripcion": "Descripción breve",
-        "costoAproximado": "Rango de precios",
-        "horario": "Horario",
-        "ubicacion": "Ubicación",
-        "especialidad": "Especialidad"
-      }
-    ],
-    "costoTransporte": {
-      "tipoTransporte": "Tipo",
-      "costoIda": "Costo ida",
-      "costoVuelta": "Costo vuelta",
-      "duracionViaje": "Duración",
-      "frecuencia": "Frecuencia",
-      "puntoPartida": "Origen",
-      "puntoLlegada": "Destino",
-      "observaciones": "Observaciones"
-    },
-    "detallesAdicionales": {
-      "mejorEpoca": "Época recomendada",
-      "recomendaciones": ["Rec 1", "Rec 2"],
-      "consideracionesClima": ["Consideración 1", "Consideración 2"]
+      "transporte": {
+        "tipo_transporte": {
+          "nombre": "Nombre del tipo de transporte"
+        },
+        "nombre": "Nombre específico del transporte"
+      },
+      "actividades": [
+        {
+          "turno": "mañana/tarde/noche",
+          "orden": 1,
+          "lugares": [
+            {
+              "nombre": "Nombre del lugar",
+              "descripcion": "Descripción del lugar",
+              "ubicacion": "Ubicación específica",
+              "tipo_lugar": {
+                "nombre": "Tipo de lugar (museo, restaurante, etc.)"
+              }
+            }
+          ]
+        }
+      ]
     }
-  }]
+  ]
 }
 
 Consideraciones:
@@ -154,11 +169,21 @@ Consideraciones:
 3. Incluye opciones de transporte económico si el presupuesto es limitado
 4. Especifica claramente qué incluye cada costo
 5. Usa nombres específicos de lugares
-6. Incluir al menos 2 actividades y 2 lugares de comida por recomendación
-7. Considera el clima pronosticado para cada día al planificar las actividades
-8. IMPORTANTE: El campo "ubicacion" en lugaresComida debe contener SOLO el nombre de la ciudad, sin paréntesis ni información adicional
-9. IMPORTANTE: Los destinos seleccionados son departamentos. Debes recomendar actividades en ciudades específicas dentro de esos departamentos. Por ejemplo:
+6. Incluir al menos 2 actividades por día
+7. IMPORTANTE: Debes generar un itinerario completo para cada día del viaje
+8. IMPORTANTE: Los destinos seleccionados son departamentos. Debes recomendar actividades en ciudades específicas dentro de esos departamentos. Por ejemplo:
    - Si el destino es "Cajamarca" (departamento), puedes recomendar actividades en "Cajamarca" (ciudad), "Celendín", "Chota", etc.
-   - Si el destino es "Cusco" (departamento), puedes recomendar actividades en "Cusco" (ciudad), "Ollantaytambo", "Pisac", etc.`;
+   - Si el destino es "Cusco" (departamento), puedes recomendar actividades en "Cusco" (ciudad), "Ollantaytambo", "Pisac", etc.
+9. IMPORTANTE: Las recomendaciones deben estar dentro del departamento (estado) especificado para cada destino. Por ejemplo:
+    - Si el destino es "Chiclayo" en el departamento de "Lambayeque", todas las recomendaciones deben ser de lugares dentro de Lambayeque
+    - Si el destino es "Trujillo" en el departamento de "La Libertad", todas las recomendaciones deben ser de lugares dentro de La Libertad${considerarClima ? '\n10. IMPORTANTE: Si el viaje es de 3 días o menos, planifica las actividades considerando el clima pronosticado para cada día. Si el viaje es más largo, solo considera el clima para los primeros 3 días.' : ''}
+11. IMPORTANTE: Cada día debe tener un itinerario completo y coherente
+12. IMPORTANTE: El presupuesto debe distribuirse equitativamente entre los días del viaje
+13. IMPORTANTE: Los campos deben coincidir exactamente con los modelos del backend:
+    - Turnos: mañana, tarde, noche
+    - Tipos de lugar: museo, restaurante, parque, etc.
+    - Tipos de transporte: terrestre, aéreo, marítimo, etc.
+14. IMPORTANTE: Cada actividad debe tener un orden secuencial dentro de su turno
+15. IMPORTANTE: Cada lugar debe tener un tipo_lugar válido`;
   }
 }

@@ -70,12 +70,12 @@
                 buttonLayout="horizontal"
                 spinnerMode="horizontal"
                 [min]="1"
-                [max]="30"
+                [max]="7"
                 class="w-64"
                 [placeholder]="'Número de ' + getDiasTexto()">
               </p-inputNumber>
               <p class="text-sm text-gray-500">
-                Mínimo 1 día, máximo 30 días
+                Mínimo 1 día, máximo 7 días
               </p>
             </div>
           </p-card>
@@ -178,7 +178,7 @@
             iconPos="right"
             (onClick)="siguientePaso()"
             [disabled]="(pasoActual === 1 && miForm.get('presupuesto')?.value < getPresupuestoMinimo()) ||
-                       (pasoActual === 2 && (miForm.get('diasViaje')?.value < 1 || miForm.get('diasViaje')?.value > 30)) ||
+                       (pasoActual === 2 && (miForm.get('diasViaje')?.value < 1 || miForm.get('diasViaje')?.value > 7)) ||
                        (pasoActual === 3 && !esFechaValida()) ||
                        (pasoActual === 4 && !miForm.get('lugarSalida')?.value)">
           </p-button>
@@ -215,6 +215,9 @@
                 <span></span>
               </div>
             </div>
+
+            <!-- Itinerario Detallado -->
+            <app-itinerario-detallado [itinerarios]="itinerarios"></app-itinerario-detallado>
           </div>
 
           <!-- Input de Mensaje -->

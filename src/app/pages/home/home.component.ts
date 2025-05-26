@@ -17,12 +17,13 @@ import { FilterService } from 'primeng/api';
 import { CarouselModule } from 'primeng/carousel';
 import { delay, timer } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { RecomendacionesCarouselComponent } from '../../components/recomendaciones-carousel/recomendaciones-carousel.component';
+import { ItinerarioDetalladoComponent } from '../../components/itinerario-detallado/itinerario-detallado.component';
 import { Actividad, LugarComida, CostoTransporte, Recomendacion, Itinerario } from '../../interfaces/recomendaciones.interface';
 import { FormattersUtil } from '../../utils/formatters.util';
 import { MessageProcessorUtil } from '../../utils/message-processor.util';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { EstadoService } from '../../services/estado.service';
 
 interface Lugar {
   nombre: string;
@@ -58,7 +59,8 @@ interface LugarRecomendado {
     AutoCompleteModule,
     CarouselModule,
     FooterComponent,
-    SelectModule
+    SelectModule,
+    ItinerarioDetalladoComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
@@ -133,9 +135,12 @@ export class HomeComponent implements OnInit {
   // Formulario principal
   miForm!: FormGroup;
 
+  private estadosPorCiudad: Map<string, string> = new Map();
+
   constructor(
     private chatService: ChatService,
     private ciudadService: CiudadService,
+    private estadoService: EstadoService,
     private filterService: FilterService,
     private fb: FormBuilder
   ) {
@@ -152,7 +157,7 @@ export class HomeComponent implements OnInit {
     this.miForm = this.fb.group({
       presupuesto: [0, [Validators.required, Validators.min(this.getPresupuestoMinimo())]],
       moneda: [this.monedas[0], [Validators.required]],
-      diasViaje: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
+      diasViaje: [1, [Validators.required, Validators.min(1), Validators.max(7)]],
       fechaSalida: [new Date(), [Validators.required]],
       lugarSalida: [null, [Validators.required]],
       destinos: [[], []],
@@ -278,26 +283,52 @@ export class HomeComponent implements OnInit {
     });
 
     try {
-      // Paso 1: Obtener lugares recomendados
-      console.log('\n=== PASO 1: OBTENCIÓN DE LUGARES RECOMENDADOS ===');
+      // Paso 1: Obtener estados para las ciudades seleccionadas
+      console.log('\n=== PASO 1: OBTENCIÓN DE ESTADOS ===');
+      const destinos = this.miForm.get('destinos')?.value || [];
+      const lugarSalida = this.miForm.get('lugarSalida')?.value;
+      const diasViaje = this.miForm.get('diasViaje')?.value;
+
+      // Obtener estado para el lugar de salida
+      if (lugarSalida) {
+        const estadoSalida = await this.estadoService.obtenerEstadoPorCiudad(lugarSalida, 'Peru').toPromise();
+        if (estadoSalida?.status === 'success') {
+          this.estadosPorCiudad.set(lugarSalida, estadoSalida.data.nombre);
+        }
+      }
+
+      // Obtener estados para los destinos
+      for (const destino of destinos) {
+        const estadoDestino = await this.estadoService.obtenerEstadoPorCiudad(destino, 'Peru').toPromise();
+        if (estadoDestino?.status === 'success') {
+          this.estadosPorCiudad.set(destino, estadoDestino.data.nombre);
+        }
+      }
+
+      console.log('Estados obtenidos:', Object.fromEntries(this.estadosPorCiudad));
+
+      // Paso 2: Obtener lugares recomendados
+      console.log('\n=== PASO 2: OBTENCIÓN DE LUGARES RECOMENDADOS ===');
       console.log('Datos del formulario:', {
         presupuesto: this.miForm.get('presupuesto')?.value,
         moneda: this.miForm.get('moneda')?.value,
-        diasViaje: this.miForm.get('diasViaje')?.value,
+        diasViaje: diasViaje,
         fechaSalida: this.miForm.get('fechaSalida')?.value,
         lugarSalida: this.miForm.get('lugarSalida')?.value,
-        destinos: this.miForm.get('destinos')?.value
+        destinos: this.miForm.get('destinos')?.value,
+        estados: Object.fromEntries(this.estadosPorCiudad)
       });
 
       const promptLugares = MessageProcessorUtil.generarPromptLugares(
         mensaje,
         this.miForm.get('presupuesto')?.value,
-        this.miForm.get('diasViaje')?.value,
+        diasViaje,
         this.miForm.get('fechaSalida')?.value,
         this.miForm.get('lugarSalida')?.value,
         this.miForm.get('destinos')?.value || [],
         this.preferenciasUsuario,
-        this.miForm.get('moneda')?.value.value
+        this.miForm.get('moneda')?.value.value,
+        Object.fromEntries(this.estadosPorCiudad)
       );
 
       console.log('Prompt enviado a DeepSeek para lugares:', promptLugares);
@@ -315,51 +346,58 @@ export class HomeComponent implements OnInit {
         fecha: new Date()
       });
 
-      // Paso 2: Obtener clima para cada lugar (optimizado para no repetir ciudades)
-      console.log('\n=== PASO 2: OBTENCIÓN DEL CLIMA ===');
-      
-      // Crear un mapa de ciudades únicas
-      const ciudadesUnicas = new Map<string, { ciudad: string; pais: string }>();
-      lugares.lugares.forEach((lugar: LugarRecomendado) => {
-        const ciudadNormalizada = this.normalizarTexto(lugar.ciudad);
-        const paisNormalizado = this.normalizarTexto(lugar.pais);
-        const key = `${ciudadNormalizada}-${paisNormalizado}`;
-        if (!ciudadesUnicas.has(key)) {
-          ciudadesUnicas.set(key, { ciudad: ciudadNormalizada, pais: paisNormalizado });
-        }
-      });
+      // Paso 3: Obtener clima solo si el viaje es de 3 días o menos
+      let climaPorCiudad = new Map();
+      if (diasViaje <= 3) {
+        console.log('\n=== PASO 3: OBTENCIÓN DEL CLIMA ===');
 
-      console.log('Ciudades únicas para consultar clima:', Array.from(ciudadesUnicas.values()));
+        // Crear un mapa de ciudades únicas
+        const ciudadesUnicas = new Map<string, { ciudad: string; pais: string }>();
+        lugares.lugares.forEach((lugar: LugarRecomendado) => {
+          const ciudadNormalizada = this.normalizarTexto(lugar.ciudad);
+          const paisNormalizado = this.normalizarTexto(lugar.pais);
+          const key = `${ciudadNormalizada}-${paisNormalizado}`;
+          if (!ciudadesUnicas.has(key)) {
+            ciudadesUnicas.set(key, { ciudad: ciudadNormalizada, pais: paisNormalizado });
+          }
+        });
 
-      // Consultar clima solo para ciudades únicas
-      const promesasClima = Array.from(ciudadesUnicas.values()).map(({ ciudad, pais }) => {
-        console.log(`Preparando consulta de clima para: ${ciudad}, ${pais}`);
-        return this.chatService.obtenerClima(ciudad, pais).toPromise();
-      });
+        console.log('Ciudades únicas para consultar clima:', Array.from(ciudadesUnicas.values()));
 
-      const climas = await Promise.all(promesasClima);
-      console.log('Respuestas de la API de clima:', climas);
+        // Consultar clima solo para ciudades únicas
+        const promesasClima = Array.from(ciudadesUnicas.values()).map(({ ciudad, pais }) => {
+          console.log(`Preparando consulta de clima para: ${ciudad}, ${pais}`);
+          return this.chatService.obtenerClima(ciudad, pais).toPromise();
+        });
 
-      // Crear un mapa de clima por ciudad
-      const climaPorCiudad = new Map();
-      Array.from(ciudadesUnicas.values()).forEach(({ ciudad, pais }, index) => {
-        const key = `${ciudad}-${pais}`;
-        climaPorCiudad.set(key, climas[index]);
-      });
+        const climas = await Promise.all(promesasClima);
+        console.log('Respuestas de la API de clima:', climas);
 
-      // Paso 3: Generar itinerario con información del clima
-      console.log('\n=== PASO 3: GENERACIÓN DE ITINERARIO ===');
+        // Crear un mapa de clima por ciudad
+        Array.from(ciudadesUnicas.values()).forEach(({ ciudad, pais }, index) => {
+          const key = `${ciudad}-${pais}`;
+          climaPorCiudad.set(key, climas[index]);
+        });
+      } else {
+        console.log('\n=== PASO 3: OBTENCIÓN DEL CLIMA (OMITIDO) ===');
+        console.log('El viaje dura más de 3 días, no se consultará el clima');
+      }
+
+      // Paso 4: Generar itinerario con información del clima
+      console.log('\n=== PASO 4: GENERACIÓN DE ITINERARIO ===');
       const promptItinerario = MessageProcessorUtil.generarPromptItinerario(
         mensaje,
         this.miForm.get('presupuesto')?.value,
-        this.miForm.get('diasViaje')?.value,
+        diasViaje,
         this.miForm.get('fechaSalida')?.value,
         this.miForm.get('lugarSalida')?.value,
         this.miForm.get('destinos')?.value || [],
         this.preferenciasUsuario,
         this.miForm.get('moneda')?.value.value,
         lugares.lugares,
-        Array.from(climaPorCiudad.values())
+        Array.from(climaPorCiudad.values()),
+        Object.fromEntries(this.estadosPorCiudad),
+        diasViaje <= 3
       );
 
       console.log('Prompt enviado a DeepSeek para itinerario:', promptItinerario);

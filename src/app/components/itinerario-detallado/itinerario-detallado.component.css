@@ -1,0 +1,57 @@
+:host ::ng-deep {
+  .p-timeline-event-content {
+    line-height: 1.5;
+  }
+
+  .p-timeline-event-opposite {
+    display: none;
+  }
+
+  .p-timeline-event-connector {
+    background-color: var(--primary-color);
+  }
+
+  .p-timeline-event-marker {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+}
+
+/* Estilos para los turnos */
+.turno-manana {
+  background-color: var(--yellow-50);
+  color: var(--yellow-700);
+}
+
+.turno-tarde {
+  background-color: var(--orange-50);
+  color: var(--orange-700);
+}
+
+.turno-noche {
+  background-color: var(--blue-50);
+  color: var(--blue-700);
+}
+
+/* Animación de fade-in */
+.bg-white {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  :host ::ng-deep .p-timeline-event-content {
+    padding: 0.5rem;
+  }
+}

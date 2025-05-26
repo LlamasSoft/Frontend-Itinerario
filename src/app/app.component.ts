@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
-import { TestService } from './services/test.service';
+import { AuthService, Usuario } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -17,63 +17,72 @@ import { TestService } from './services/test.service';
     MenubarModule,
     ButtonModule,
     AvatarModule,
-    MenuModule  ],
+    MenuModule
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
   title = 'itinerario-frontend';
-  backendResponse: any;
-  error: string = '';
-  items = [
-    {
-      label: 'Home',
-      icon: 'pi pi-home',
-      routerLink: '/home'
-    },
-    {
-      label: 'Generar Itinerario',
-      icon: 'pi pi-compass',
-      routerLink: '/generar-itinerario'
-    },
-    {
-      label: 'Itinerarios',
-      icon: 'pi pi-list',
-      routerLink: '/itinerarios'
-    }
-  ];
+  items: MenuItem[] = [];
+  userMenuItems: MenuItem[] = [];
+  usuarioActual: Usuario | null = null;
 
-  userMenuItems: MenuItem[] | undefined;
-
-  constructor(private testService: TestService) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.testBackend();
-    this.userMenuItems = [
-      {
-        label: 'Mi Perfil',
-        icon: 'pi pi-user'
-      },
-      {
-        separator: true
-      },
-      {
-        label: 'Cerrar Sesión',
-        icon: 'pi pi-sign-out'
-      }
-    ];
+    this.actualizarMenu();
+    this.authService.getUsuarioActual().subscribe(usuario => {
+      this.usuarioActual = usuario;
+      this.actualizarMenu();
+    });
   }
 
-  testBackend() {
-    this.testService.testBackend().subscribe({
-      next: (response) => {
-        this.backendResponse = response;
-        this.error = '';
-      },
-      error: (err) => {
-        this.error = 'Error al conectar con el backend: ' + err.message;
-        this.backendResponse = null;
-      }
-    });
+  private actualizarMenu() {
+    if (this.usuarioActual) {
+      this.items = [
+        {
+          label: 'Home',
+          icon: 'pi pi-home',
+          routerLink: '/home'
+        },
+        {
+          label: 'Generar Itinerario',
+          icon: 'pi pi-plus',
+          routerLink: '/generar-itinerario'
+        },
+        {
+          label: 'Itinerarios',
+          icon: 'pi pi-list',
+          routerLink: '/itinerarios'
+        }
+      ];
+
+      this.userMenuItems = [
+        {
+          label: `${this.usuarioActual.first_name} ${this.usuarioActual.last_name}`,
+          icon: 'pi pi-user'
+        },
+        {
+          label: 'Cerrar Sesión',
+          icon: 'pi pi-sign-out',
+          command: () => this.authService.logout()
+        }
+      ];
+    } else {
+      this.items = [
+        {
+          label: 'Home',
+          icon: 'pi pi-home',
+          routerLink: '/home'
+        },
+        {
+          label: 'Iniciar Sesión',
+          icon: 'pi pi-sign-in',
+          routerLink: '/login'
+        }
+      ];
+      this.userMenuItems = [];
+    }
   }
 }

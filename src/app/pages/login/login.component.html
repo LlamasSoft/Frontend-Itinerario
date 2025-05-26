@@ -1,0 +1,185 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-primary-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <!-- Logo y título -->
+    <div class="text-center">
+      <div class="flex justify-center">
+        <i class="pi pi-compass text-5xl text-primary-500"></i>
+      </div>
+      <h2 class="mt-6 text-3xl font-bold text-gray-900">
+        {{ mostrarRegistro ? 'Crear cuenta' : 'Iniciar sesión' }}
+      </h2>
+      <p class="mt-2 text-sm text-gray-600">
+        {{ mostrarRegistro ? '¿Ya tienes una cuenta?' : '¿No tienes una cuenta?' }}
+        <button (click)="toggleForm()" class="font-medium text-primary-600 hover:text-primary-500">
+          {{ mostrarRegistro ? 'Inicia sesión' : 'Regístrate' }}
+        </button>
+      </p>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <span class="block sm:inline">{{ error }}</span>
+    </div>
+
+    <!-- Formulario de login -->
+    <form *ngIf="!mostrarRegistro" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-medium text-gray-700">Nombre de usuario</label>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            pInputText
+            class="w-full mt-1"
+            [ngClass]="{'ng-invalid ng-dirty': loginForm.get('username')?.invalid && loginForm.get('username')?.touched}"
+            placeholder="Tu nombre de usuario"
+          />
+          <small *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="text-red-500">
+            El nombre de usuario debe tener al menos 3 caracteres
+          </small>
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+          <p-password
+            id="password"
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [ngClass]="{'ng-invalid ng-dirty': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}"
+            placeholder="Ingresa tu contraseña"
+          ></p-password>
+          <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-red-500">
+            La contraseña debe tener al menos 6 caracteres
+          </small>
+        </div>
+      </div>
+
+      <div>
+        <p-button
+          type="submit"
+          label="Iniciar sesión"
+          icon="pi pi-sign-in"
+          [loading]="loading"
+          styleClass="w-full"
+        ></p-button>
+      </div>
+    </form>
+
+    <!-- Formulario de registro -->
+    <form *ngIf="mostrarRegistro" [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <div class="mb-4">
+          <label for="username-registro" class="block text-sm font-medium text-gray-700">Nombre de usuario</label>
+          <input
+            id="username-registro"
+            type="text"
+            formControlName="username"
+            pInputText
+            class="w-full mt-1"
+            [ngClass]="{'ng-invalid ng-dirty': registroForm.get('username')?.invalid && registroForm.get('username')?.touched}"
+            placeholder="Elige un nombre de usuario"
+          />
+          <small *ngIf="registroForm.get('username')?.invalid && registroForm.get('username')?.touched" class="text-red-500">
+            El nombre de usuario debe tener al menos 3 caracteres
+          </small>
+        </div>
+
+        <div class="mb-4">
+          <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            pInputText
+            class="w-full mt-1"
+            [ngClass]="{'ng-invalid ng-dirty': registroForm.get('email')?.invalid && registroForm.get('email')?.touched}"
+            placeholder="tu@email.com"
+          />
+          <small *ngIf="registroForm.get('email')?.invalid && registroForm.get('email')?.touched" class="text-red-500">
+            Por favor, ingresa un correo electrónico válido
+          </small>
+        </div>
+
+        <div class="mb-4">
+          <label for="first_name" class="block text-sm font-medium text-gray-700">Nombre</label>
+          <input
+            id="first_name"
+            type="text"
+            formControlName="first_name"
+            pInputText
+            class="w-full mt-1"
+            [ngClass]="{'ng-invalid ng-dirty': registroForm.get('first_name')?.invalid && registroForm.get('first_name')?.touched}"
+            placeholder="Tu nombre"
+          />
+          <small *ngIf="registroForm.get('first_name')?.invalid && registroForm.get('first_name')?.touched" class="text-red-500">
+            El nombre debe tener al menos 2 caracteres
+          </small>
+        </div>
+
+        <div class="mb-4">
+          <label for="last_name" class="block text-sm font-medium text-gray-700">Apellido</label>
+          <input
+            id="last_name"
+            type="text"
+            formControlName="last_name"
+            pInputText
+            class="w-full mt-1"
+            [ngClass]="{'ng-invalid ng-dirty': registroForm.get('last_name')?.invalid && registroForm.get('last_name')?.touched}"
+            placeholder="Tu apellido"
+          />
+          <small *ngIf="registroForm.get('last_name')?.invalid && registroForm.get('last_name')?.touched" class="text-red-500">
+            El apellido debe tener al menos 2 caracteres
+          </small>
+        </div>
+
+        <div class="mb-4">
+          <label for="password-registro" class="block text-sm font-medium text-gray-700">Contraseña</label>
+          <p-password
+            id="password-registro"
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [ngClass]="{'ng-invalid ng-dirty': registroForm.get('password')?.invalid && registroForm.get('password')?.touched}"
+            placeholder="Crea una contraseña"
+          ></p-password>
+          <small *ngIf="registroForm.get('password')?.invalid && registroForm.get('password')?.touched" class="text-red-500">
+            La contraseña debe tener al menos 6 caracteres
+          </small>
+        </div>
+
+        <div class="mb-4">
+          <label for="confirmar-password" class="block text-sm font-medium text-gray-700">Confirmar contraseña</label>
+          <p-password
+            id="confirmar-password"
+            formControlName="confirmarPassword"
+            [toggleMask]="true"
+            [feedback]="false"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [ngClass]="{'ng-invalid ng-dirty': registroForm.get('confirmarPassword')?.invalid && registroForm.get('confirmarPassword')?.touched}"
+            placeholder="Confirma tu contraseña"
+          ></p-password>
+          <small *ngIf="registroForm.get('confirmarPassword')?.invalid && registroForm.get('confirmarPassword')?.touched" class="text-red-500">
+            Las contraseñas no coinciden
+          </small>
+        </div>
+      </div>
+
+      <div>
+        <p-button
+          type="submit"
+          label="Registrarse"
+          icon="pi pi-user-plus"
+          [loading]="loading"
+          styleClass="w-full"
+        ></p-button>
+      </div>
+    </form>
+  </div>
+</div>
