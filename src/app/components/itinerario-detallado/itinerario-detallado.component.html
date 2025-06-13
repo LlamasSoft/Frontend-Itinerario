@@ -1,4 +1,4 @@
-<div *ngIf="itinerarios.length > 0" class="mt-8">
+<div *ngIf="itinerarios.length > 0" class="mt-8 max-w-6xl mx-auto">
   <p-card header="Itinerario de Viaje" class="shadow-lg">
     <div class="space-y-8">
       <!-- Resumen del viaje -->
@@ -15,8 +15,39 @@
           </div>
           <div class="bg-white p-4 rounded-lg shadow-sm">
             <h3 class="font-semibold text-gray-700 mb-2">Costo Total Estimado</h3>
-            <p class="text-primary-600">{{formatearCosto(calcularCostoTotal())}}</p>
+            <p class="text-primary-600">{{itinerarios[0].costo}}</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Desglose de costos -->
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-xl font-bold text-primary-600 mb-4">Desglose de Costos</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="font-semibold text-gray-700 mb-2">Transporte</h4>
+            <p class="text-gray-600">{{itinerarios[0].detalle_costos?.transporte}}</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="font-semibold text-gray-700 mb-2">Entradas</h4>
+            <p class="text-gray-600">{{itinerarios[0].detalle_costos?.entradas}}</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="font-semibold text-gray-700 mb-2">Alimentación</h4>
+            <p class="text-gray-600">{{itinerarios[0].detalle_costos?.alimentacion}}</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="font-semibold text-gray-700 mb-2">Equipo Adicional</h4>
+            <p class="text-gray-600">{{itinerarios[0].detalle_costos?.equipo_lluvia}}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recomendaciones del clima -->
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-xl font-bold text-primary-600 mb-4">Recomendaciones del Clima</h3>
+        <div class="bg-yellow-50 p-4 rounded-lg">
+          <p class="text-yellow-800">{{itinerarios[0].recomendaciones_clima?.mensaje}}</p>
         </div>
       </div>
 
@@ -87,11 +118,11 @@
             </div>
             <div class="bg-white p-4 rounded-lg shadow-sm">
               <div class="flex justify-between items-center">
-                <div>
+                <div *ngIf="itinerario.transporte.costoIda">
                   <p class="text-sm text-gray-600">Costo Ida</p>
                   <p class="font-semibold text-primary-600">{{itinerario.transporte.costoIda}}</p>
                 </div>
-                <div>
+                <div *ngIf="itinerario.transporte.costoVuelta">
                   <p class="text-sm text-gray-600">Costo Vuelta</p>
                   <p class="font-semibold text-primary-600">{{itinerario.transporte.costoVuelta}}</p>
                 </div>
@@ -104,7 +135,7 @@
         <div class="p-4 bg-primary-50 border-t border-primary-100">
           <div class="flex justify-between items-center">
             <h4 class="text-lg font-semibold text-primary-600">Costo Total del Día</h4>
-            <p class="text-2xl font-bold text-primary-600">{{formatearCosto(calcularTotalDia(itinerario))}}</p>
+            <p class="text-2xl font-bold text-primary-600">{{calcularTotalDia(itinerario)}}</p>
           </div>
         </div>
       </div>

@@ -5,6 +5,71 @@ import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { TimelineModule } from 'primeng/timeline';
 
+export interface DetalleCostos {
+  transporte: string;
+  entradas: string;
+  alimentacion: string;
+  equipo_lluvia: string;
+}
+
+export interface RecomendacionesClima {
+  mensaje: string;
+}
+
+export interface Transporte {
+  tipo_transporte: {
+    nombre: string;
+  };
+  nombre: string;
+  costoIda?: string;
+  costoVuelta?: string;
+}
+
+export interface Itinerario {
+  dia: number;
+  fecha: string;
+  lugar: string;
+  ciudad: {
+    name: string;
+    state: {
+      name: string;
+    };
+    country: {
+      name: string;
+    };
+  };
+  costo: string;
+  clima: {
+    fecha: string;
+    ciudad: {
+      name: string;
+    };
+    pais: {
+      name: string;
+    };
+    temperatura_maxima: number;
+    temperatura_minima: number;
+    estado_clima: string;
+    humedad: number;
+    probabilidad_lluvia: number;
+  };
+  transporte: Transporte;
+  actividades: Array<{
+    turno: string;
+    orden: number;
+    lugares: Array<{
+      nombre: string;
+      descripcion: string;
+      ubicacion: string;
+      tipo_lugar: {
+        nombre: string;
+      };
+    }>;
+  }>;
+  detalle_costos?: DetalleCostos;
+  recomendaciones_clima?: RecomendacionesClima;
+}
+
 @Component({
   selector: 'app-itinerario-detallado',
   standalone: true,
@@ -19,13 +84,10 @@ import { TimelineModule } from 'primeng/timeline';
   styleUrls: ['./itinerario-detallado.component.css']
 })
 export class ItinerarioDetalladoComponent {
-  @Input() itinerarios: any[] = [];
+  @Input() itinerarios: Itinerario[] = [];
 
-  formatearCosto(costo: number): string {
-    return new Intl.NumberFormat('es-PE', {
-      style: 'currency',
-      currency: 'PEN'
-    }).format(costo);
+  formatearCosto(costo: string): string {
+    return costo;
   }
 
   extraerNumero(texto: string): number {
@@ -33,15 +95,8 @@ export class ItinerarioDetalladoComponent {
     return match ? parseFloat(match[0]) : 0;
   }
 
-  calcularTotalDia(itinerario: any): number {
-    const totalActividades = itinerario.actividades.reduce((total: number, actividad: any) => {
-      return total + this.extraerNumero(actividad.costo);
-    }, 0);
-
-    const totalTransporte = this.extraerNumero(itinerario.transporte.costoIda) +
-                           this.extraerNumero(itinerario.transporte.costoVuelta);
-
-    return totalActividades + totalTransporte;
+  calcularTotalDia(itinerario: Itinerario): string {
+    return itinerario.costo;
   }
 
   getTurnoClass(turno: string): string {
@@ -57,7 +112,7 @@ export class ItinerarioDetalladoComponent {
     }
   }
 
-  calcularCostoTotal(): number {
-    return this.itinerarios.reduce((total, it) => total + this.calcularTotalDia(it), 0);
+  calcularCostoTotal(): string {
+    return this.itinerarios[0]?.costo || '0 PEN';
   }
 }

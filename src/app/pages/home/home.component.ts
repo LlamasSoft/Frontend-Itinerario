@@ -18,12 +18,15 @@ import { CarouselModule } from 'primeng/carousel';
 import { delay, timer } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ItinerarioDetalladoComponent } from '../../components/itinerario-detallado/itinerario-detallado.component';
-import { Actividad, LugarComida, CostoTransporte, Recomendacion, Itinerario } from '../../interfaces/recomendaciones.interface';
+import { Actividad, LugarComida, CostoTransporte, Recomendacion } from '../../interfaces/recomendaciones.interface';
 import { FormattersUtil } from '../../utils/formatters.util';
 import { MessageProcessorUtil } from '../../utils/message-processor.util';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { EstadoService } from '../../services/estado.service';
+
+// Importar la interfaz Itinerario del componente ItinerarioDetallado
+import { Itinerario } from '../../components/itinerario-detallado/itinerario-detallado.component';
 
 interface Lugar {
   nombre: string;
@@ -407,6 +410,9 @@ export class HomeComponent implements OnInit {
       // Extraer el JSON de la respuesta del itinerario
       const itinerario = this.extraerJSONDeRespuesta(respuestaItinerario.data);
       console.log('Itinerario extraído y procesado:', itinerario);
+
+      // Actualizar el itinerario
+      this.itinerarios = itinerario.itinerarios;
 
       // Agregar respuesta del asistente con el itinerario y consideraciones del clima
       this.mensajes.push({
